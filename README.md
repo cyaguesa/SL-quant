@@ -12,7 +12,7 @@ For support, questions or requests, please contact: carlo.yague-sanz@unamur.be
 
 _SL-quant_ comes as a simple bash script that works on macOS and Linux systems. However, the following dependencies need to be installed and set in your PATH:
 
-- [blastn](ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/) from the blast+ suite
+- [blastn](http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/) from the blast+ suite
 - [samtools](http://samtools.sourceforge.net/)
 - [picard-tools](http://broadinstitute.github.io/picard/)
 - [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)
