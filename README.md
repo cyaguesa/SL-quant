@@ -81,32 +81,27 @@ To minimize _SL-quant_ running time, its primary input is limited to reads susce
 In its default mode _SL-quant_ takes two parameters, the unmapped reads in bam format and the base name (path/name) for the outputs files:
 
 Usage: `./SL-quant.sh [unmapped.bam] [ouput_dir/base]`
+
 Example: `./SL-quant.sh test_unmapped.bam SL-quant_results/test`
 
 ###### paired-end mode
 In the case paired-end data is available, we provide an optimized paired-end mode (see advanced parameters) that require three parameters:
 
 Usage: `./SL-quant.sh [mapped.bam] [unmapped.bam] [ouput_dir/base]`
+
 Example: `./SL-quant.sh test_mapped.bam test_unmapped.bam SL-quant_results/test_paired`
 
 #### Advanced paramaters
 
 At the beginning of the SL-qaunt.sh file, there are a few additional parameters that can be modified for advanced users.
 
-`set -e` 
-This means that the script will stop at the first error (which is usually for the best).
-`SINGLE="single"` 
-Set to "single" for single-end mode (default). Any other value triggers paired-end mode.
-`SL_db="data/blast_db/SL.fasta"` 
-The path to SL sequence database for blast.
-`gene_annotation="data/genes.gtf"`
-The annotation file for the summarization step.
-`index="data/ce10_bowtie2_index/genome"`
-The genome index for bowtie2 (only required on single-end mode).
-`paired_orientation="fr-firststrand"`
-The read orientation for paired-end mode (ignored in single-end mode). Should be set to either "fr-firststrand" (default), "fr-secondstrand" or "fr-unstrand".
-`single_orientation="stranded"`
-The read orientation for single-end mode (ignored in paired-end mode). Should be set to either "stranded" (default), "reversely_stranded" or "unstranded".
+- `set -e` This means that the script will stop at the first error (which is usually for the best).
+- `SINGLE="single"` Set to "single" for single-end mode (default). Any other value triggers paired-end mode.
+- `SL_db="data/blast_db/SL.fasta"` The path to SL sequence database for blast.
+- `gene_annotation="data/genes.gtf"`The annotation file for the summarization step.
+- `index="data/ce10_bowtie2_index/genome"`The genome index for bowtie2 (only required on single-end mode).
+- `paired_orientation="fr-firststrand"`The read orientation for paired-end mode (ignored in single-end mode). Should be set to either "fr-firststrand" (default), "fr-secondstrand" or "fr-unstrand".
+- `single_orientation="stranded"`The read orientation for single-end mode (ignored in paired-end mode). Should be set to either "stranded" (default), "reversely_stranded" or "unstranded".
 
 #### Output files
 
@@ -131,7 +126,7 @@ Those files are generated during the _SL-quant_ process. When the file name ends
 To reproduce the full analysis from the raw data, [R](https://www.r-project.org/), [bedtools](http://bedtools.readthedocs.io/en/latest/), [tophat2](https://ccb.jhu.edu/software/tophat/index.shtml) and [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) should be installed.
 
 ### Get and map data
-We provide two bash scripts to map the reads for the paired-end (map_reads.sh) and the single-end dataset (./map_reads_modENCODE.sh).
+We provide two bash scripts to map the reads for the paired-end (`map_reads.sh`) and the single-end dataset (`./map_reads_modENCODE.sh`).
 
 ###### paired-end dataset (SRR1585277)
     cd ~/Desktop/SL-quant
@@ -163,4 +158,4 @@ In single-end mode (set SINGLE parameter to "single")
     blastn -query data/reads/random.fa -db data/blast_db/SL.fasta -outfmt 6 -max_target_seqs 1 -num_threads 4 -word_size 8 > SL-quant_results/random_blasted.txt
 
 ## Analyse the data and make the plots
-    An R script (analyse_SL.R) is provided to reproduce the analysis presented in the analysis.
+An R script (`analyse_SL.R`) is provided to reproduce the analysis presented in the analysis.
