@@ -11,7 +11,7 @@ sed 's/CHROMOSOME_/chr/g' data/ce10_bowtie2_index/genome.fa | sed 's/chrMtDNA/ch
 mv data/ce10_bowtie2_index/temp.fa data/ce10_bowtie2_index/genome.fa
 rm data/ce10_bowtie2_index/temp.fa
 echo 'build bowtie2 index...'
-bowtie2-build data/ce10_bowtie2_index/genome.fa data/ce10_bowtie2_index/genome
+bowtie2-build --threads 4 data/ce10_bowtie2_index/genome.fa data/ce10_bowtie2_index/genome
 echo 'build samtools index...'
 samtools faidx data/ce10_bowtie2_index/genome.fa
 echo 'done ! You can now test SL-quant !'
