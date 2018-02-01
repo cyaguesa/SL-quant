@@ -134,17 +134,17 @@ To reproduce the full analysis from the raw data, [R](https://www.r-project.org/
 We provide two bash scripts to map the reads for the paired-end (`map_reads.sh`) and the single-end dataset (`./map_reads_modENCODE.sh`).
 
 ###### paired-end dataset (SRR1585277)
-    cd ~/Desktop/SL-quant
-    wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR158/007/SRR1585277/SRR1585277_1.fastq.gz -P data/reads/SRR1585277
-    wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR158/007/SRR1585277/SRR1585277_2.fastq.gz -P data/reads/SRR1585277
+    mkdir data/reads/SRR1585277
+    curl ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR158/007/SRR1585277/SRR1585277_1.fastq.gz -o data/reads/SRR1585277/SRR1585277_1.fastq.gz
+    curl ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR158/007/SRR1585277/SRR1585277_2.fastq.gz -o data/reads/SRR1585277/SRR1585277_2.fastq.gz
     ./map_reads.sh
 
 ###### single-end dataset (modENCODE_4594)
-    wget ftp://data.modencode.org/all_files/cele-raw-1/4594_SRR125481.fastq.gz -P data/reads/modENCODE
+    mkdir data/reads/SRR1585277
+    curl ftp://data.modencode.org/all_files/cele-raw-1/4594_SRR125481.fastq.gz -o data/reads/modENCODE/4594_SRR125481.fastq.gz
     ./map_reads_modENCODE.sh
 
 ###### generate random reads
-    bowtie2-inspect  data/ce10_bowtie2_index/genome > data/ce10_bowtie2_index/genome.fa
     bedtools random -l 50 -seed 0 -n 1000003 -g data/chrom_summary.txt > data/reads/random.bed
     bedtools getfasta -fi data/ce10_bowtie2_index/genome.fa -bed data/reads/random.bed > data/reads/random.fa
 
