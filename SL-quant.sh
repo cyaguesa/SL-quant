@@ -25,7 +25,7 @@
 set -e                                 # stops script at the first error.
 SINGLE="single"                        # set to "single" for single-end mode. Any other value for paired-end mode.
 SL_db="data/blast_db/SL.fasta"         # path to SL sequence database (for blast).
-gene_annotation="data/genes.gtf"       # annotation file
+gene_annotation="data/genes.SAF"       # annotation file
 index="data/ce10_bowtie2_index/genome" # genome index file (only required on single-end mode).
 paired_orientation="fr-firststrand"    # ignored in single-end mode. Value={"fr-firststrand" (default), "fr-secondstrand", "fr-unstrand"}
 single_orientation="stranded"          # ignored in paired-end mode. Value={"stranded" (default), "reversely_stranded", "unstranded"}
@@ -103,7 +103,7 @@ if [ "$SINGLE" != "single" ]; then
     picard FilterSamReads FILTER=includeReadList READ_LIST_FILE=${3}_SL2_IDs.txt I=${3}_oneEndMapped.bam O=${3}_SL2_mates.bam 2>> ${3}_log.txt
 
     echo "   done... summarize..."
-    featureCounts -s $featureCounts_S -g gene_id -T 4 -a $gene_annotation -o ${3}_counts.txt ${3}_SL1_mates.bam ${3}_SL2_mates.bam 2>> ${3}_log.txt
+    featureCounts -s $featureCounts_S -F SAF -g GeneID -T 4 -a $gene_annotation -o ${3}_counts.txt ${3}_SL1_mates.bam ${3}_SL2_mates.bam 2>> ${3}_log.txt
 
   fi
 
@@ -167,7 +167,7 @@ else
     else                                                           # set read orientation for featureCounts (unstranded)
       featureCounts_S=0
     fi
-    featureCounts -s $featureCounts_S -g gene_id -T 4 -a $gene_annotation -o ${2}_counts.txt ${2}_SL1_remapped.bam ${2}_SL2_remapped.bam 2>> ${2}_log.txt
+    featureCounts -s $featureCounts_S -F SAF -g GeneID -T 4 -a $gene_annotation -o ${2}_counts.txt ${2}_SL1_remapped.bam ${2}_SL2_remapped.bam 2>> ${2}_log.txt
   fi
 
 fi
