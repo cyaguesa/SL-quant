@@ -153,11 +153,11 @@ We provide two bash scripts to map the reads for the paired-end (`map_reads.sh`)
 ###### paired-end dataset (SRR1585277)
 In paired-end mode (set SINGLE parameter to "paired")
 
-    ./SL-quant.sh data/reads/SRR1585277/accepted_hits_sorted.bam data/reads/SRR1585277/unmapped.bam SL-quant_results/SRR1585277_paired"
+    ./SL-quant.sh data/reads/SRR1585277/SRR1585277/accepted_hits_sorted.bam data/reads/SRR1585277/SRR1585277/unmapped.bam SL-quant_results/SRR1585277_paired"
 
 In single-end mode (set SINGLE parameter to "single")
 
-    ./SL-quant.sh data/reads/SRR1585277/unmapped.bam SL-quant_results/SRR1585277_single"
+    ./SL-quant.sh data/reads/SRR1585277/SRR1585277/unmapped.bam SL-quant_results/SRR1585277_single"
 
 ###### single-end dataset (modENCODE_4594)
     ./SL-quant.sh data/reads/modENCODE/modENCODE_4594/unmapped.bam SL-quant_results/modENCODE_4594
