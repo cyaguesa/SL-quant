@@ -1,7 +1,8 @@
 #!/bin/bash
 
-echo 'download C. elegans genome...'
 mkdir data/ce10_bowtie2_index
+mkdir SL-quant_results
+echo 'download C. elegans genome...'
 curl ftp://ftp.wormbase.org/pub/wormbase/releases/WS220/species/c_elegans/c_elegans.WS220.genomic.fa.gz -o data/ce10_bowtie2_index/genome.fa.gz
 echo 'gunzip it...'
 gunzip data/ce10_bowtie2_index/genome.fa.gz
