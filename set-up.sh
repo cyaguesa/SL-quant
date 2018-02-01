@@ -1,5 +1,6 @@
 #!/bin/bash
 
+chmod +x SL-quant.sh map_reads_modENCODE.sh map_reads.sh
 mkdir data/ce10_bowtie2_index
 mkdir SL-quant_results
 echo 'download C. elegans genome...'
