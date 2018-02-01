@@ -63,11 +63,16 @@ To install _SL-quant_, clone this repository using git:
 
 or alternatively, use the green downoad button at the top of the page.
 
-###### Test SL-quant
-We provide a small dataset for testing SL-quant with its default parameters.
+###### Set-up SL-quant
+To complete SL-quant set-up, use this script to download the _C. elegans_ genome sequence and build the indexes:
 
     cd ~/Desktop/SL-quant
-    chmod +x SL-quant.sh
+    chmod +x SL-quant.sh set-up.sh
+    ./set-up.sh
+
+###### Test SL-quant
+We provide a small test dataset (1000 reads) for testing SL-quant with its default parameters.
+
     ./SL-quant.sh test_unmapped.bam SL-quant_results/test
 
 ## Detailed usage
