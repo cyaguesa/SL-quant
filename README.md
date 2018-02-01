@@ -64,7 +64,7 @@ To install _SL-quant_, clone this repository using git:
 or alternatively, use the green downoad button at the top of the page.
 
 ###### Set-up SL-quant
-To complete SL-quant set-up, use this script to create directories, make the other scripts executable, download the _C. elegans_ genome sequence and build the indexes:
+To complete SL-quant set-up, use this script to create directories, make the other scripts executable, download the _C. elegans_ genome sequence and build the indexes. This can take a few minutes.
 
     cd SL-quant  # or 'cd ~/Desktop/SL-quant' if it is cloned on your desktop
     chmod +x set-up.sh
