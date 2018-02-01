@@ -87,14 +87,14 @@ In its default mode _SL-quant_ takes two parameters, the unmapped reads in bam f
 
 Usage: `./SL-quant.sh [unmapped.bam] [ouput_dir/base]`
 
-Example: `./SL-quant.sh test_unmapped.bam SL-quant_results/test`
+Example: `./SL-quant.sh data/reads/test_unmapped.bam SL-quant_results/test`
 
 ###### paired-end mode
 In the case paired-end data is available, we provide an optimized paired-end mode (see advanced parameters) that require three parameters:
 
 Usage: `./SL-quant.sh [mapped.bam] [unmapped.bam] [ouput_dir/base]`
 
-Example: `./SL-quant.sh test_mapped.bam test_unmapped.bam SL-quant_results/test_paired`
+Example: `./SL-quant.sh data/reads/test_mapped.bam data/reads/test_unmapped.bam SL-quant_results/test_paired`
 
 #### Advanced paramaters
 
