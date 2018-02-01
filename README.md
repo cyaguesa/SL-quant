@@ -78,7 +78,7 @@ We provide a small test dataset (1000 reads) for testing SL-quant with its defau
 ## Detailed usage
 
 #### A word about the SL-quant input
-To minimize _SL-quant_ running time, its primary input is limited to reads susceptible to originate from trans-spliced RNA fragments, that is, unmapped reads in bam format. This implies that a first round of mapping to the _C. elegans_ genome or transcriptome must precede the use of _SL-quant_. It must be performed end-to-end (without soft-clipping) in order to make sure that reads originating from trans-spliced RNA fragments do not map. This is the default behaviour of many mappers (bowtie2, tophat2, BBMap, …) but for others, such as STAR or HiSAT2, soft-clipping should be disabled. Beside this specification, any bam file containing unmapped reads can be fed into _SL-quant_, making it particularly well suited for posterior analysis of old data.
+To minimize _SL-quant_ running time, its primary input is limited to reads susceptible to originate from trans-spliced RNA fragments, that is, unmapped reads in bam format. This implies that a first round of mapping to the _C. elegans_ genome or transcriptome must precede the use of _SL-quant_. It must be performed end-to-end (without soft-clipping) in order to make sure that reads originating from trans-spliced RNA fragments do not map. This is the default behaviour of many mappers (bowtie2, tophat2, BBMap, …) but for others, such as STAR or HiSAT2, soft-clipping should be disabled. Beside this specification, any coordinate-sorted bam file containing unmapped reads can be fed into _SL-quant_, making it particularly well suited for posterior analysis of old data.
 
 #### Basic paramaters
 
