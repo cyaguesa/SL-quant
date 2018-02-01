@@ -68,7 +68,7 @@ We provide a small dataset for testing SL-quant with its default parameters.
 
     cd ~/Desktop/SL-quant
     chmod +x SL-quant.sh
-    ./SL-quant.sh test.bam SL-quant_results/test
+    ./SL-quant.sh test_unmapped.bam SL-quant_results/test
 
 ## Detailed usage
 
@@ -139,6 +139,7 @@ We provide two bash scripts to map the reads for the paired-end (`map_reads.sh`)
     ./map_reads_modENCODE.sh
 
 ###### generate random reads
+    bowtie2-inspect  data/ce10_bowtie2_index/genome > data/ce10_bowtie2_index/genome.fa
     bedtools random -l 50 -seed 0 -n 1000003 -g data/chrom_summary.txt > data/reads/random.bed
     bedtools getfasta -fi data/ce10_bowtie2_index/genome.fa -bed data/reads/random.bed > data/reads/random.fa
 
