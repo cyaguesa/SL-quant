@@ -73,7 +73,7 @@ To complete SL-quant set-up, use this script to download the _C. elegans_ genome
 ###### Test SL-quant
 We provide a small test dataset (1000 reads) for testing SL-quant with its default parameters.
 
-    ./SL-quant.sh test_unmapped.bam SL-quant_results/test
+    ./SL-quant.sh data/reads/test_unmapped.bam SL-quant_results/test
 
 ## Detailed usage
 
