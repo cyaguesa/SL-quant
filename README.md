@@ -98,7 +98,7 @@ Example: `./SL-quant.sh data/reads/test_mapped.bam data/reads/test_unmapped.bam 
 
 #### Advanced paramaters
 
-At the beginning of the SL-qaunt.sh file, there are a few additional parameters that can be modified for advanced users.
+At the beginning of the SL-quant.sh file, there are a few additional parameters that can be modified for advanced users.
 
 - `set -e` This means that the script will stop at the first error (which is usually for the best).
 - `SINGLE="single"` Set to "single" for single-end mode (default). Any other value triggers paired-end mode.
