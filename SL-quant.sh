@@ -38,7 +38,7 @@ single_orientation="stranded"          # ignored in paired-end mode. Value={"str
 if [ "$SINGLE" != "single" ]; then
   if [ $# != 3 ]; then
      echo ""; echo "   Usage : ./SL-quant.sh [mapped.bam] [unmapped.bam] [ouput_dir/base]"; echo ""
-     echo "   Example : ./SL-quant.sh data/reads/SRR1585277/accepted_hits_sorted.bam data/reads/SRR1585277/unmapped.bam SL-quant_results/SRR1585277";echo""
+     echo "   Example : ./SL-quant.sh data/reads/test_mapped.bam data/reads/test_unmapped.bam SL-quant_results/test_paired";echo""
      exit 1
 
   else
@@ -115,8 +115,7 @@ if [ "$SINGLE" != "single" ]; then
 else
   if [ $# != 2 ]; then
     echo ""; echo "   Usage : ./SL-quant.sh [unmapped.bam] [ouput_dir/base]"; echo ""
-    echo "   Example : ./SL-quant.sh data/reads/SRR1585277/unmapped.bam SL-quant_results/SRR1585277_single"
-    echo "   Example2 : ./SL-quant.sh data/reads/modENCODE/modENCODE_4594/unmapped.bam SL-quant_results/modENCODE_4594"
+    echo "   Example : ./SL-quant.sh data/reads/test_unmapped.bam SL-quant_results/test"
     exit 1
 
   else
