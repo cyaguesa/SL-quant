@@ -124,6 +124,7 @@ else
     echo "   [unmapped.bam] = $1"
     echo "   [ouput_dir/base] = $2"
     echo "   [SL blast database] = $SL_db"
+    echo "   [index files] = $index"
     echo "   [gene annotation] = $gene_annotation"
     echo "   [read orientation] = $single_orientation";echo ""
 
