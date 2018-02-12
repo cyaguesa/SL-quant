@@ -20,30 +20,17 @@ _SL-quant_ comes as a simple bash script that works on macOS and Linux systems. 
 
 There are many ways to install these but the easiest might be through a package manager such as brew. 
 
-#### Easy dependencies installation on macOS with homebrew
+#### Easy dependencies installation with homebrew
 
-###### Install homebrew
+###### Install homebrew on macOS
 Follow instructions on the [brew homepage](https://brew.sh/) or simply paste this command in the Terminal:
 
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
-###### Install dependencies with brew
-Paste the following commands in the Terminal:
-
-    brew update
-    brew install blast
-    brew install samtools
-    brew install picard-tools
-    brew install bowtie2
-    brew tap jrderuiter/tap
-    brew install subread
-
-#### Easy dependencies installation on Linux with linuxbrew
-
-###### Install linuxbrew
+###### Install linuxbrew on linux systems
 Follow instructions on the [linuxbrew homepage](https://linuxbrew.sh/).
 
-###### Install dependencies with linuxbrew
+###### Install dependencies with brew (macOS and linux)
 Paste the following commands in the Terminal:
 
     brew update
