@@ -114,6 +114,32 @@ Those files are generated during the _SL-quant_ process. When the file name ends
 ###### log file
 `[output_dir/base]_log.txt` countains various warning/outputs generated during the _SL-quant_ process.
 
+## Adaptation to other species
+While SL-quant was developed for and tested on _C.elegans_ data, many other species do SL-trans-splicing. The analysis of trans-splicing events in such species is possible with SL-quant with the following adaptations. If you need any help implementing those changes, don't hesitate to contact us.
+
+#### Change the SL sequences in the blast database
+1- Find the SL sequences (not the full SL RNA sequences, only the part that will be trans-spliced to the mRNA) and save it in a fasta file `SL_my_species.fasta` in the `data/blast_db` directory.
+
+2- Build the new blast database:
+
+    makeblastdb -dbtype nucl -in data/blast_db/SL_my_species
+
+3- Replace the value of the `SL_db` parameter in the `SL-quant.sh` script by `"data/blast_db/SL_my_species.fasta"`.
+
+#### Change the reference genome index.
+1- Download the reference genome for your species of interest and save it as a fasta file `genome_my_species.fa` in a new `data/index_my_species` directory.
+
+2- Build the bowtie2 index:
+
+    bowtie2-build data/index_my_species/genome_my_species.fa data/index_my_species/genome_my_species
+
+3- Replace the value of the `index` parameter in the `SL-quant.sh` script by `"data/index_my_species/genome_my_species.fa"`.
+
+#### Change the gene annotation file.
+1 - For now, SL-quant only supports [SAF annotation files](http://bioinf.wehi.edu.au/featureCounts/). Support for .gtf files is planned in the near future. Download or create one of those file `genes_my_species.SAF` for your species and save it into `data` directory.
+
+2- Replace the value of the `gene_annotation` parameter in the `SL-quant.sh` script by `data/genes_my_species.SAF`.
+
 ## Reproduce the analysis of the manuscript.
 To reproduce the full analysis from the raw data, [R](https://www.r-project.org/), [bedtools](http://bedtools.readthedocs.io/en/latest/), [tophat2](https://ccb.jhu.edu/software/tophat/index.shtml) and [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) should be installed.
 
