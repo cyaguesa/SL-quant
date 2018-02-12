@@ -141,12 +141,12 @@ While SL-quant was developed for and tested on _C.elegans_ data, many other spec
 3- Replace the value of the `index` parameter in the `SL-quant.sh` script by `"data/index_my_species/genome_my_species.fa"`.
 
 #### Change the gene annotation file.
-1 - For now, SL-quant only supports [SAF annotation files](http://bioinf.wehi.edu.au/featureCounts/). Support for .gtf files is planned in the near future. Download or create one of those file `genes_my_species.SAF` for your species and save it into `data` directory.
+1 - For now, SL-quant only supports [SAF annotation files](http://bioinf.wehi.edu.au/featureCounts/). Support for .gtf files is planned in the near future. Download or create one of those file `genes_my_species.SAF` for your species and save it into the `data` directory.
 
 2- Replace the value of the `gene_annotation` parameter in the `SL-quant.sh` script by `data/genes_my_species.SAF`.
 
-## Reproduce the analysis of the manuscript.
-To reproduce the full analysis from the raw data, [R](https://www.r-project.org/), [bedtools](http://bedtools.readthedocs.io/en/latest/), [tophat2](https://ccb.jhu.edu/software/tophat/index.shtml) and [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) should be installed.
+## Reproduce the analysis from the manuscript.
+To reproduce the full analysis presented in our manuscript from the raw data, [R](https://www.r-project.org/), [bedtools](http://bedtools.readthedocs.io/en/latest/), [tophat2](https://ccb.jhu.edu/software/tophat/index.shtml) and [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) should be installed.
 
 ### Get and map data
 We provide two bash scripts to map the reads for the paired-end (`map_reads.sh`) and the single-end dataset (`./map_reads_modENCODE.sh`).
