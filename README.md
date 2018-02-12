@@ -8,6 +8,11 @@ Detailed description and validation of the pipeline are reported in the manuscri
 
 For support, questions or requests, please contact: carlo.yague-sanz@unamur.be 
 
+- [Installation & quick start](https://github.com/cyaguesa/SL-quant/blob/master/README.md#installation--quick-start)
+- [Detailed usage](https://github.com/cyaguesa/SL-quant/blob/master/README.md#detailed-usage)
+- [Adaptation to other species](https://github.com/cyaguesa/SL-quant/blob/master/README.md#adaptation-to-other-species)
+- [Reproduce the analysis from the manuscript](https://github.com/cyaguesa/SL-quant/blob/master/README.md#reproduce-the-analysis-from-the-manuscript)
+
 ## Installation & quick start
 
 _SL-quant_ comes as a simple bash script that works on macOS and Linux systems. However, the following dependencies need to be installed and set in your PATH:
