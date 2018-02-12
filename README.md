@@ -120,7 +120,7 @@ Those files are generated during the _SL-quant_ process. When the file name ends
 `[output_dir/base]_log.txt` countains various warning/outputs generated during the _SL-quant_ process.
 
 ## Adaptation to other species
-While SL-quant was developed for and tested on _C.elegans_ data, many other species do SL-trans-splicing. The analysis of trans-splicing events in such species is possible with SL-quant with the following adaptations. If you need any help implementing those changes, don't hesitate to contact us.
+While SL-quant was developed for and tested on _C.elegans_ data, many other species do SL-trans-splicing. The analysis of trans-splicing events in such species is possible with SL-quant with the following adaptations. Don't hesitate to contact us if you need any help implementing those changes.
 
 #### Change the SL sequences in the blast database
 1- Find the SL sequences (not the full SL RNA sequences, only the part that will be trans-spliced to the mRNA) and save it in a fasta file `SL_my_species.fasta` in the `data/blast_db` directory.
