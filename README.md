@@ -6,7 +6,7 @@ _SL-quant_ is a bash pipeline that adapts to paired-end and single-end RNA-seq d
 
 Detailed description and validation of the pipeline are reported in the manuscript [still under consideration for publication; reference will be added once published].
 
-For support, questions or requests, please contact: carlo.yague-sanz@unamur.be 
+For support, questions or requests, please contact: carlo.yaguesanz@unamur.be 
 
 - [Installation & quick start](https://github.com/cyaguesa/SL-quant/blob/master/README.md#installation--quick-start)
 - [Detailed usage](https://github.com/cyaguesa/SL-quant/blob/master/README.md#detailed-usage)
