@@ -11,6 +11,7 @@ For support, questions or requests, please contact: carlo.yaguesanz@unamur.be
 - [Installation & quick start](https://github.com/cyaguesa/SL-quant/blob/master/README.md#installation--quick-start)
 - [Detailed usage](https://github.com/cyaguesa/SL-quant/blob/master/README.md#detailed-usage)
 - [Adaptation to other species](https://github.com/cyaguesa/SL-quant/blob/master/README.md#adaptation-to-other-species)
+- [Identification of trans-splice sites](https://github.com/cyaguesa/SL-quant/blob/master/README.md#Identification-of-trans-splice-sites
 - [Reproduce the analysis from the manuscript](https://github.com/cyaguesa/SL-quant/blob/master/README.md#reproduce-the-analysis-from-the-manuscript)
 
 ## Installation & quick start
@@ -144,6 +145,17 @@ While SL-quant was developed for and tested on _C.elegans_ data, many other spec
 1 - For now, SL-quant only supports [SAF annotation files](http://bioinf.wehi.edu.au/featureCounts/). Support for .gtf files is planned in the near future. Download or create one of those file `genes_my_species.SAF` for your species and save it into the `data` directory.
 
 2- Replace the value of the `gene_annotation` parameter in the `SL-quant.sh` script by `data/genes_my_species.SAF`.
+
+## Identification of trans-splice sites
+
+We designed SL-quant with the idea of quantifying SL trans-splicing events by genes but it is also possible to identify trans-splice sites at single nucleotide resolution from the output. Indeed, in single-end mode, the 5' end of the reads mapped after SL sequence trimming correspond to the position of the trans-splice sites.
+
+    bedtools genomecov -ibam SL-quant_results/test_SL1_remapped.bam -dz -5 -strand + > SL-quant_results/TS_SL1_sites_fwd.tab
+    bedtools genomecov -ibam SL-quant_results/test_SL1_remapped.bam -dz -5 -strand - > SL-quant_results/TS_SL1_sites_fwd.tab
+    bedtools genomecov -ibam SL-quant_results/test_SL2_remapped.bam -dz -5 -strand + > SL-quant_results/TS_SL2_sites_fwd.tab
+    bedtools genomecov -ibam SL-quant_results/test_SL2_remapped.bam -dz -5 -strand - > SL-quant_results/TS_SL2_sites_fwd.tab
+
+    head SL-quant_results/TS_SL1_sites_fwd.tab
 
 ## Reproduce the analysis from the manuscript.
 To reproduce the full analysis presented in our manuscript from the raw data, [R](https://www.r-project.org/), [bedtools](http://bedtools.readthedocs.io/en/latest/), [tophat2](https://ccb.jhu.edu/software/tophat/index.shtml) and [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) should be installed.
