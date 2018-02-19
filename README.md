@@ -150,10 +150,10 @@ While SL-quant was developed for and tested on _C.elegans_ data, many other spec
 
 We designed SL-quant with the idea of quantifying SL trans-splicing events by genes but it is also possible to identify trans-splice sites at single nucleotide resolution from the output. Indeed, in single-end mode, the 5' end of the reads mapped after SL sequence trimming correspond to the position of the trans-splice sites.
 
-    bedtools genomecov -ibam SL-quant_results/test_SL1_remapped.bam -dz -5 -strand + > SL-quant_results/TS_SL1_sites_fwd.tab
-    bedtools genomecov -ibam SL-quant_results/test_SL1_remapped.bam -dz -5 -strand - > SL-quant_results/TS_SL1_sites_fwd.tab
-    bedtools genomecov -ibam SL-quant_results/test_SL2_remapped.bam -dz -5 -strand + > SL-quant_results/TS_SL2_sites_fwd.tab
-    bedtools genomecov -ibam SL-quant_results/test_SL2_remapped.bam -dz -5 -strand - > SL-quant_results/TS_SL2_sites_fwd.tab
+    bedtools genomecov -ibam SL-quant_results/test_SL1_remapped.bam -dz -5 -strand + > SL-quant_results/test_TS_SL1_sites_fwd.tab
+    bedtools genomecov -ibam SL-quant_results/test_SL1_remapped.bam -dz -5 -strand - > SL-quant_results/test_TS_SL1_sites_fwd.tab
+    bedtools genomecov -ibam SL-quant_results/test_SL2_remapped.bam -dz -5 -strand + > SL-quant_results/test_TS_SL2_sites_fwd.tab
+    bedtools genomecov -ibam SL-quant_results/test_SL2_remapped.bam -dz -5 -strand - > SL-quant_results/test_TS_SL2_sites_fwd.tab
 
     head SL-quant_results/TS_SL1_sites_fwd.tab
 
