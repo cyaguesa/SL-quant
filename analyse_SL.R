@@ -4,21 +4,16 @@
 # 1- FUNCTIONS
 #________________________________________________________________________________________________________________
 
-return_pos_in_operon<-function(my_op, annot=SL_quant){
+return_pos_in_operon<-function(my_op, annot=my_genes){
   # gives you the positional order of the genes of an operon
   n=length(my_op$genes[[1]])
-  res=rep("NA",n)
-  if (my_op$strand=="+"){
-    for (j in c(1:n)){
-      res[j]=as.numeric(annot$start[which(annot$GeneID == my_op$genes[[1]][j])])
-    }
-    res=order(res)
+  res=rep(NA,n)
+  for (j in c(1:n)){
+    res[j]=as.numeric(annot$start[which(annot$GeneID == my_op$genes[[1]][j])])
   }
-  else if (my_op$strand=="-"){
-    for (j in c(1:n)){
-      res[j]=as.numeric(annot$start[which(annot$GeneID == my_op$genes[[1]][j])])
-    }
-    res=order(res, decreasing=T)
+  res=order(res)
+  if (my_op$strand=="-"){
+    res=rev(res)
   }
   return (res)
 }
