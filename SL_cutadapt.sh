@@ -35,7 +35,7 @@ read_orientation="R"                   # read orientation (default="R", reversel
 
   else
     echo ""
-    echo "SL-quant.sh: SINGLE-END MODE"
+    echo "SL-quant.sh: 'CUTADAPT' MODE"
     echo "   [unmapped.bam] = $1"
     echo "   [ouput_dir/base] = $2"
     echo "   [SL fasta] = $SL_db"
