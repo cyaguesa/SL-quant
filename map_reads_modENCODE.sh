@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# This script uses tophat2 to align paired-end reads.
+# This script uses hisat2 to align paired-end reads.
 # It sorts the mapped reads by name and coordinates.
 # instructions on https://github.com/cyaguesa/SL-quant
 
 # REQUIREMENTS (see installation instruction if unmet):      VERSION USED       NOTE
-# - TopHat2 installed and in your path                       2.1.1
 # - samtools installed and in your path                      1.5
 # - trimmomatic installed with path set in parameters        0.36               Manually set the path.
+# - hisat2 installed and in your path                        2.0.5             
 
 
 # by Carlo Yague-Sanz, 2017
@@ -16,11 +16,12 @@
 # PARAMETERS
 #––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
-index="data/ce10_bowtie2_index/genome" # genome index file
-core=1                                 # number of cores used for sorting
-mem="3328M"                            # amount of memory by core used for sorting
-set -e                                 # stops script at the first error
+index="data/ce10_hisat2_index/genome"  # genome index file.
+core=1                                 # number of cores used for sorting.
+mem="3328M"                            # amount of memory by core used for sorting.
+set -e                                 # stops script at the first error.
 trimmomatic="/Users/Carlo/Documents/binaries/Trimmomatic-0.36/trimmomatic-0.36.jar"           # path to trimmomatic                           
+threads=4                              # number of threads to use for mapping.
 
 #––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 
@@ -39,13 +40,14 @@ else
     mkdir -p $base
 
     echo "  trim adapters"
-    java -jar $trimmomatic SE $base.fastq.gz ${base}/trimmed.fq.gz ILLUMINACLIP:data/adapters/TruSeq2-SE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+#    java -jar $trimmomatic SE $base.fastq.gz ${base}/trimmed.fq.gz ILLUMINACLIP:data/adapters/TruSeq2-SE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
 
     echo "  map SE reads"
-    tophat2 -r 200 --no-sort -N 2 --read-edit-dist 2 --min-intron-length 5 --max-intron-length 3000 --max-multihits 4 --no-discordant --no-coverage-search -p 4 --library-type fr-firststrand --output-dir $base $index ${base}/trimmed.fq.gz
+    hisat2 -p $threads --no-discordant --no-softclip --min-intronlen 20 --max-intronlen 5000 --rna-strandness R -x $index -U ${base}/trimmed.fq.gz | samtools view -b -F 260 > ${base}/accepted_hits.bam
 
     echo "... done... sorting..."
     samtools sort -@ $core -m $mem ${base}/accepted_hits.bam > ${base}/accepted_hits_sorted.bam
+    #samtools sort -n -@ $core -m $mem ${base}/accepted_hits.bam > ${base}/accepted_hits_Nsorted.bam
 
     echo "... done... indexing and cleaning..."
     samtools index ${base}/accepted_hits_sorted.bam
