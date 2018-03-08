@@ -43,17 +43,18 @@ else
     java -jar $trimmomatic SE $base.fastq.gz ${base}/trimmed.fq.gz ILLUMINACLIP:data/adapters/TruSeq2-SE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
 
     echo "  map SE reads"
-    hisat2 -p $threads --no-discordant --no-softclip --min-intronlen 20 --max-intronlen 5000 --rna-strandness R --un ${base}/unmapped.sam -x $index -U ${base}/trimmed.fq.gz | samtools view -b -F 260 > ${base}/accepted_hits.bam
-
+    hisat2 -p $threads --no-softclip --min-intronlen 20 --max-intronlen 5000 --rna-strandness R -x $index -U ${base}/trimmed.fq.gz -S ${base}/mapped.sam
+    samtools view -b -F 260 ${base}/mapped.sam> ${base}/accepted_hits.bam
+    samtools view -b -f 4 ${base}/mapped.sam> ${base}/unmapped.bam
+    
     echo "... done... sorting..."
     samtools sort -@ $core -m $mem ${base}/accepted_hits.bam > ${base}/accepted_hits_sorted.bam
 
     echo "... done... indexing and cleaning..."
     samtools index ${base}/accepted_hits_sorted.bam
     samtools flagstat ${base}/accepted_hits_sorted.bam > ${base}/accepted_hits.bam.flagstat
-    samtools view -b ${base}/unmapped.sam > ${base}/unmapped.bam
     rm ${base}/accepted_hits.bam
-    rm ${base}/unmapped.sam 
+    rm ${base}/mapped.sam
 
   done
 fi
