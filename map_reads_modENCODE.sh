@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script uses hisat2 to align paired-end reads.
+# This script uses hisat2 to align single-end reads.
 # It sorts the mapped reads by name and coordinates.
 # instructions on https://github.com/cyaguesa/SL-quant
 
