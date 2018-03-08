@@ -40,7 +40,7 @@ else
     mkdir -p $base
 
     echo "  trim adapters"
-#    java -jar $trimmomatic SE $base.fastq.gz ${base}/trimmed.fq.gz ILLUMINACLIP:data/adapters/TruSeq2-SE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+    java -jar $trimmomatic SE $base.fastq.gz ${base}/trimmed.fq.gz ILLUMINACLIP:data/adapters/TruSeq2-SE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
 
     echo "  map SE reads"
     hisat2 -p $threads --no-discordant --no-softclip --min-intronlen 20 --max-intronlen 5000 --rna-strandness R -x $index -U ${base}/trimmed.fq.gz | samtools view -b -F 260 > ${base}/accepted_hits.bam
