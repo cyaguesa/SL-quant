@@ -27,7 +27,7 @@ SINGLE="single"                        # set to "single" for single-end mode. An
 SL_db="data/blast_db/SL.fasta"         # path to SL sequence database (for blast).
 gene_annotation="data/genes.SAF"       # annotation file
 index="data/ce10_hisat2_index/genome"  # genome index file (only required on single-end mode).
-paired_orientation="fr-firststrand"    # ignored in single-end mode. Value={"fr-firststrand" (default), "fr-secondstrand", "fr-unstrand"}
+paired_orientation="FR"                # ignored in single-end mode. Value={"FR" (default), "RF", "unstranded"}
 single_orientation="R"                 # ignored in paired-end mode. Value={"F" (stranded), "R" (reversely stranded), "unstranded"}
 threads=4                              # number of threads to use.
 
