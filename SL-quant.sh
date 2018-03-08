@@ -11,7 +11,7 @@
 # - blastn (blast+) installed and in your path               2.6.0+
 # - samtools installed and in your path                      1.5
 # - picard installed and in your path                        2.9.0
-# - bowtie2 installed and in your path                       2.3.2              Only required on single-end mode.
+# - hisat2 installed and in your path                        2.0.5              Only required on single-end mode.
 # - featureCounts installed and in your path                 1.5.0              
 
 
@@ -26,10 +26,10 @@ set -e                                 # stops script at the first error.
 SINGLE="single"                        # set to "single" for single-end mode. Any other value for paired-end mode.
 SL_db="data/blast_db/SL.fasta"         # path to SL sequence database (for blast).
 gene_annotation="data/genes.SAF"       # annotation file
-index="data/ce10_bowtie2_index/genome" # genome index file (only required on single-end mode).
+index="data/ce10_hisat2_index/genome" # genome index file (only required on single-end mode).
 paired_orientation="fr-firststrand"    # ignored in single-end mode. Value={"fr-firststrand" (default), "fr-secondstrand", "fr-unstrand"}
-single_orientation="stranded"          # ignored in paired-end mode. Value={"stranded" (default), "reversely_stranded", "unstranded"}
-
+single_orientation="R"                 # ignored in paired-end mode. Value={"F" (stranded), "R" (reversely stranded), "unstranded"}
+threads=4                              # number of threads to use.
 
 #––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 # PAIRED-END MODE
@@ -53,7 +53,7 @@ if [ "$SINGLE" != "single" ]; then
 
     echo "   fetch read pairs with one end unmapped..."
     
-    if [ "$paired_orientation" == "fr-firststrand" ]; then
+    if [ "$paired_orientation" == "FR" ]; then
  
       echo "      [1/2] get R2 reads unmapped with mate mapped and convert to fasta"
       samtools view -f 133 -F 8 ${2} | awk '{OFS="\t"; print ">"$1"\n"$10}' > ${3}_oneEnd_unmapped.fasta
@@ -63,7 +63,7 @@ if [ "$SINGLE" != "single" ]; then
 
       featureCounts_S=2   # set R1 read orientation for featureCounts (reverse)
 
-    elif [ "$paired_orientation" == "fr-secondstrand" ]; then
+    elif [ "$paired_orientation" == "RF" ]; then
 
       echo "      [1/2] get R1 reads unmapped with mate mapped and convert to fasta"
       samtools view -f 69 -F 8 ${2} | awk '{OFS="\t"; print ">"$1"\n"$10}' > ${3}_oneEnd_unmapped.fasta
@@ -155,16 +155,16 @@ else
     paste <(samtools view ${2}_SL1.sam | cut -f 1-11) <(cat ${2}_blasted_SL1.txt) | awk '{OFS="\t"; print $1,"4",$3,$4,$5,$6,$7,$8,$9, substr($10, $19),  substr($11, $19)}' | picard SamToFastq VALIDATION_STRINGENCY=SILENT QUIET=TRUE I=/dev/stdin FASTQ=${2}_SL1_trimmed.fq
     paste <(samtools view ${2}_SL2.sam | cut -f 1-11) <(cat ${2}_blasted_SL2.txt) | awk '{OFS="\t"; print $1,"4",$3,$4,$5,$6,$7,$8,$9, substr($10, $19),  substr($11, $19)}' | picard SamToFastq VALIDATION_STRINGENCY=SILENT QUIET=TRUE I=/dev/stdin FASTQ=${2}_SL2_trimmed.fq
 
-    echo "   done... map with bowtie2"
-    bowtie2 --no-unal --quiet -U ${2}_SL1_trimmed.fq -x $index | samtools view -b -F 256 > ${2}_SL1_remapped.bam
-    bowtie2 --no-unal --quiet -U ${2}_SL2_trimmed.fq -x $index | samtools view -b -F 256 > ${2}_SL2_remapped.bam
-
+    echo "   done... map with hisat2"
+    hisat2 -p $threads --no-discordant --no-softclip --min-intronlen 20 --max-intronlen 5000 --rna-strandness $single_orientation -x $index -U ${2}_SL1_trimmed.fq | samtools view -b -F 260 > ${2}_SL1_remapped.bam
+    hisat2 -p $threads --no-discordant --no-softclip --min-intronlen 20 --max-intronlen 5000 --rna-strandness $single_orientation -x $index -U ${2}_SL2_trimmed.fq | samtools view -b -F 260 > ${2}_SL2_remapped.bam
+    
     echo "   done... summarize..."
-    if [ "$single_orientation" == "stranded" ]; then               # set read orientation for featureCounts (forward)
+    if [ "$single_orientation" == "F" ]; then               # set read orientation for featureCounts (forward)
       featureCounts_S=1   
-    elif [ "$single_orientation" == "reversely_stranded" ]; then   # set read orientation for featureCounts (reverse)
+    elif [ "$single_orientation" == "R" ]; then             # set read orientation for featureCounts (reverse)
       featureCounts_S=2   
-    else                                                           # set read orientation for featureCounts (unstranded)
+    else                                                    # set read orientation for featureCounts (unstranded)
       featureCounts_S=0
     fi
     featureCounts -s $featureCounts_S -F SAF -g GeneID -T 4 -a $gene_annotation -o ${2}_counts.txt ${2}_SL1_remapped.bam ${2}_SL2_remapped.bam 2>> ${2}_log.txt
