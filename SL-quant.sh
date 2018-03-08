@@ -26,7 +26,7 @@ set -e                                 # stops script at the first error.
 SINGLE="single"                        # set to "single" for single-end mode. Any other value for paired-end mode.
 SL_db="data/blast_db/SL.fasta"         # path to SL sequence database (for blast).
 gene_annotation="data/genes.SAF"       # annotation file
-index="data/ce10_hisat2_index/genome" # genome index file (only required on single-end mode).
+index="data/ce10_hisat2_index/genome"  # genome index file (only required on single-end mode).
 paired_orientation="fr-firststrand"    # ignored in single-end mode. Value={"fr-firststrand" (default), "fr-secondstrand", "fr-unstrand"}
 single_orientation="R"                 # ignored in paired-end mode. Value={"F" (stranded), "R" (reversely stranded), "unstranded"}
 threads=4                              # number of threads to use.
@@ -163,7 +163,7 @@ else
     if [ "$single_orientation" == "F" ]; then               # set read orientation for featureCounts (forward)
       featureCounts_S=1   
     elif [ "$single_orientation" == "R" ]; then             # set read orientation for featureCounts (reverse)
-      featureCounts_S=2   
+      featureCounts_S=1   
     else                                                    # set read orientation for featureCounts (unstranded)
       featureCounts_S=0
     fi
