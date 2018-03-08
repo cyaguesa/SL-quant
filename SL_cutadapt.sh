@@ -39,7 +39,9 @@ read_orientation="R"                   # read orientation (default="R", reversel
     echo "   [unmapped.bam] = $1"
     echo "   [ouput_dir/base] = $2"
     echo "   [SL fasta] = $SL_db"
-    echo "   [read orientation] = $read_orientation";echo ""
+    echo "   [read orientation] = $read_orientation";
+    echo "   [alignment min length] = $align_length";echo ""
+
 
     echo "   convert unmapped reads to fastq ..."
     picard SamToFastq VALIDATION_STRINGENCY=SILENT QUIET=TRUE I=$1 FASTQ=${2}.fq
