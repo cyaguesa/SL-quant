@@ -6,7 +6,7 @@
 
 # - picard installed and in your path                        2.9.0
 # - hisat2 installed and in your path                        2.0.5             
-# - cutadapt installed and in your pat                       0.36              
+# - cutadapt installed and in your pat                       1.14              
 # - samtools installed and in your path                      1.5
 
 # by Carlo Yague-Sanz, 2017
