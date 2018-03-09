@@ -17,4 +17,6 @@ echo 'build hisat2 index...'
 hisat2-build -p 4 data/ce10_bowtie2_index/genome.fa data/ce10_hisat2_index/genome
 echo 'build samtools index...'
 samtools faidx data/ce10_bowtie2_index/genome.fa
+echo 'build blast database...'
+makeblastdb -dbtype nucl -in data/blast_db/SL.fasta
 echo 'done ! You can now test SL-quant !'
