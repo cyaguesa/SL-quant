@@ -30,6 +30,7 @@ index="data/ce10_hisat2_index/genome"  # genome index file (only required on sin
 paired_orientation="FR"                # ignored in single-end mode. Value={"FR" (default), "RF", "unstranded"}
 single_orientation="R"                 # ignored in paired-end mode. Value={"F" (stranded), "R" (reversely stranded), "unstranded"}
 threads=4                              # number of threads to use.
+send=22                                # End of alignment in 'subject' threshold for blast.
 
 #––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 # PAIRED-END MODE
@@ -92,8 +93,8 @@ if [ "$SINGLE" != "single" ]; then
     blastn -query ${3}_oneEnd_unmapped.fasta -task blastn -db $SL_db  -outfmt 6 -max_target_seqs 1 -num_threads 4 -word_size 8 > ${3}_blasted.txt 2>${3}_log.txt
 
     echo "   done... filter significant alignment with qstart==1..."
-    awk '$7 == 1 && $10 == 22 && $11 < "0.05" {print $0}' ${3}_blasted.txt | grep "SL1" > ${3}_blasted_SL1.txt
-    awk '$7 == 1 && $10 == 22 && $11 < "0.05" {print $0}' ${3}_blasted.txt | grep "SL2" > ${3}_blasted_SL2.txt
+    awk '$7 == 1 && $10 >= "'"$send"'" && $11 < "0.05" {print $0}' ${2}_blasted.txt | grep "SL1" > ${2}_blasted_SL1.txt
+    awk '$7 == 1 && $10 >= "'"$send"'" && $11 < "0.05" {print $0}' ${2}_blasted.txt | grep "SL2" > ${2}_blasted_SL2.txt
 
     echo "   done... retrieve mapped mates..."
 
@@ -160,8 +161,8 @@ else
     samtools view -f 4 $input | awk '{OFS="\t"; print ">"$1"\n"$10}' | blastn -db $SL_db -outfmt 6 -max_target_seqs 1 -num_threads 4 -word_size 8 -strand $strand > ${2}_blasted.txt 2>${2}_log.txt
 
     echo "   done... filter..."
-    awk '$7 == 1 && $10 == 22 && $11 < "0.05" {print $0}' ${2}_blasted.txt | grep "SL1" > ${2}_blasted_SL1.txt
-    awk '$7 == 1 && $10 == 22 && $11 < "0.05" {print $0}' ${2}_blasted.txt | grep "SL2" > ${2}_blasted_SL2.txt
+    awk '$7 == 1 && $10 >= "'"$send"'" && $11 < "0.05" {print $0}' ${2}_blasted.txt | grep "SL1" > ${2}_blasted_SL1.txt
+    awk '$7 == 1 && $10 >= "'"$send"'" && $11 < "0.05" {print $0}' ${2}_blasted.txt | grep "SL2" > ${2}_blasted_SL2.txt
 
     echo "   done... retrieve SL-containing reads"
 
