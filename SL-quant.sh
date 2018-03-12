@@ -131,10 +131,6 @@ else
     echo "   [gene annotation] = $gene_annotation"
     echo "   [read orientation] = $single_orientation";echo ""
 
-    paired_entries=$(samtools view -c -f 1 $1) # set this to 0 to save time if you don't want to check if the data is paired
-    if [ $paired_entries -gt 0 ]; then
-      echo ""; echo "WARNING : there are ${paired_entries} 'paired in sequencing' reads in ${1}. Consider running the script in paired-end mode."; echo ""
-    fi
 
     if [ "$single_orientation" == "R" ]; then
       strand="plus"                                 # set blast database strandness (normal)
@@ -147,11 +143,20 @@ else
     else
       strand="both"                                 # set blast database strandness (unstranded)
       featureCounts_S=0                             # set featureCounts strandness (unstranded)
-
     fi
-
-    echo "   blast unmapped reads on SL sequences..."
-    samtools view -f 4 ${1} | awk '{OFS="\t"; print ">"$1"\n"$10}' | blastn -db $SL_db -outfmt 6 -max_target_seqs 1 -num_threads 4 -word_size 8 -strand $strand > ${2}_blasted.txt 2>${2}_log.txt
+    
+    paired_entries=$(samtools view -c -f 1 $1)
+    
+    if [ $paired_entries -gt 0 ]; then
+      echo ""; echo "WARNING : there are ${paired_entries} 'paired in sequencing' reads in ${1}. Consider running the script in paired-end mode."; echo ""
+      echo "   blast unmapped R2 reads on SL sequences..."
+      samtools view -f 132 ${1} | awk '{OFS="\t"; print ">"$1"\n"$10}' | blastn -db $SL_db -outfmt 6 -max_target_seqs 1 -num_threads 4 -word_size 8 -strand $strand > ${2}_blasted.txt 2>${2}_log.txt
+    
+    else
+      echo "   blast unmapped reads on SL sequences..."
+      samtools view -f 4 ${1} | awk '{OFS="\t"; print ">"$1"\n"$10}' | blastn -db $SL_db -outfmt 6 -max_target_seqs 1 -num_threads 4 -word_size 8 -strand $strand > ${2}_blasted.txt 2>${2}_log.txt
+    fi
+    
 
     echo "   done... filter..."
     awk '$7 == 1 && $10 == 22 && $11 < "0.05" {print $0}' ${2}_blasted.txt | grep "SL1" > ${2}_blasted_SL1.txt
