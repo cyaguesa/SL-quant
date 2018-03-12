@@ -62,6 +62,7 @@ if [ "$SINGLE" != "single" ]; then
       samtools view -u -f 73 -F 260 ${1}  > ${3}_oneEndMapped.bam
 
       featureCounts_S=2   # set R1 read orientation for featureCounts (reverse)
+      strand="plus"                                 # set blast database strandness (normal)
 
     elif [ "$paired_orientation" == "RF" ]; then
 
@@ -72,6 +73,7 @@ if [ "$SINGLE" != "single" ]; then
       samtools view -u -f 137 -F 260 ${1}  > ${3}_oneEndMapped.bam
 
       featureCounts_S=2   # set R2 read orientation for featureCounts (reverse)
+      strand="reverse"                                 # set blast database strandness (reverse)
 
     else
 
@@ -82,6 +84,7 @@ if [ "$SINGLE" != "single" ]; then
       samtools view -u -f 9 -F 260 ${1}  > ${3}_oneEndMapped.bam
 
       featureCounts_S=0   # set read orientation for featureCounts (unstranded)
+      strand="both"                                 # set blast database strandness (unstranded)
 
     fi
 
@@ -133,8 +136,16 @@ else
       echo ""; echo "WARNING : there are ${paired_entries} 'paired in sequencing' reads in ${1}. Consider running the script in paired-end mode."; echo ""
     fi
 
+    if [ "$single_orientation" == "R" ]; then
+      strand="plus"                                 # set blast database strandness (normal)
+    elif [ "$single_orientation" == "F" ]; then
+      strand="minus"                                # set blast database strandness (reverse)
+    else
+      strand="both"                                 # set blast database strandness (unstranded)
+    fi
+
     echo "   blast unmapped reads on SL sequences..."
-    samtools view -f 4 ${1} | awk '{OFS="\t"; print ">"$1"\n"$10}' | blastn -db $SL_db -outfmt 6 -max_target_seqs 1 -num_threads 4 -word_size 8 > ${2}_blasted.txt 2>${2}_log.txt
+    samtools view -f 4 ${1} | awk '{OFS="\t"; print ">"$1"\n"$10}' | blastn -db $SL_db -outfmt 6 -max_target_seqs 1 -num_threads 4 -word_size 8 -strand $strand > ${2}_blasted.txt 2>${2}_log.txt
 
     echo "   done... filter..."
     awk '$7 == 1 && $10 == 22 && $11 < "0.05" {print $0}' ${2}_blasted.txt | grep "SL1" > ${2}_blasted_SL1.txt
