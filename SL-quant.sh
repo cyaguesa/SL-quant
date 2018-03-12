@@ -148,16 +148,16 @@ else
     paired_entries=$(samtools view -c -f 1 $1)
     
     if [ $paired_entries -gt 0 ]; then
-      echo ""; echo "WARNING : there are ${paired_entries} 'paired in sequencing' reads in ${1}. Consider running the script in paired-end mode."; echo ""
-      echo "   blast unmapped R2 reads on SL sequences..."
-      samtools view -f 132 ${1} > ${1}_R2.bam
-      awk '{OFS="\t"; print ">"$1"\n"$10}' ${1}_R2.bam | blastn -db $SL_db -outfmt 6 -max_target_seqs 1 -num_threads 4 -word_size 8 -strand $strand > ${2}_blasted.txt 2>${2}_log.txt
+      echo ""; echo "WARNING : there are ${paired_entries} 'paired in sequencing' reads in ${1}. Consider running the script in paired-end mode. Only R2 reads will be considered in single-end mode."; echo ""
+      samtools view -b -f 128 ${1} > ${1}_R2.bam
+      input="${1}_R2.bam"
     
     else
-      echo "   blast unmapped reads on SL sequences..."
-      samtools view -f 4 ${1} | awk '{OFS="\t"; print ">"$1"\n"$10}' | blastn -db $SL_db -outfmt 6 -max_target_seqs 1 -num_threads 4 -word_size 8 -strand $strand > ${2}_blasted.txt 2>${2}_log.txt
+      input="${1}"
     fi
-    
+
+    echo "   blast unmapped reads on SL sequences..."
+    samtools view -f 4 $input | awk '{OFS="\t"; print ">"$1"\n"$10}' | blastn -db $SL_db -outfmt 6 -max_target_seqs 1 -num_threads 4 -word_size 8 -strand $strand > ${2}_blasted.txt 2>${2}_log.txt
 
     echo "   done... filter..."
     awk '$7 == 1 && $10 == 22 && $11 < "0.05" {print $0}' ${2}_blasted.txt | grep "SL1" > ${2}_blasted_SL1.txt
@@ -167,12 +167,12 @@ else
 
     echo "      [1/2] of SL1-containing reads"
     cut -f 1 ${2}_blasted_SL1.txt > ${2}_SL1_IDs.txt
-    picard FilterSamReads FILTER=includeReadList VALIDATION_STRINGENCY=SILENT COMPRESSION_LEVEL=0 QUIET=TRUE READ_LIST_FILE=${2}_SL1_IDs.txt I=${1}_R2.bam O=${2}_SL1.sam
+    picard FilterSamReads FILTER=includeReadList VALIDATION_STRINGENCY=SILENT COMPRESSION_LEVEL=0 QUIET=TRUE READ_LIST_FILE=${2}_SL1_IDs.txt I=$input O=${2}_SL1.sam
 
 
     echo "      [2/2] of SL2-containing reads"
     cut -f 1 ${2}_blasted_SL2.txt > ${2}_SL2_IDs.txt
-    picard FilterSamReads FILTER=includeReadList VALIDATION_STRINGENCY=SILENT COMPRESSION_LEVEL=0 QUIET=TRUE READ_LIST_FILE=${2}_SL2_IDs.txt I=${1}_R2.bam O=${2}_SL2.sam
+    picard FilterSamReads FILTER=includeReadList VALIDATION_STRINGENCY=SILENT COMPRESSION_LEVEL=0 QUIET=TRUE READ_LIST_FILE=${2}_SL2_IDs.txt I=$input O=${2}_SL2.sam
 
     echo "   done... trim SL-containing reads and convert to fastq"
     paste <(samtools view ${2}_SL1.sam | cut -f 1-11) <(cat ${2}_blasted_SL1.txt) | awk '{OFS="\t"; print $1,"4",$3,$4,$5,$6,$7,$8,$9, substr($10, $19),  substr($11, $19)}' | picard SamToFastq VALIDATION_STRINGENCY=SILENT QUIET=TRUE I=/dev/stdin FASTQ=${2}_SL1_trimmed.fq
