@@ -58,7 +58,7 @@ if [ "$SINGLE" != "single" ]; then
       echo "      [1/2] get R2 reads unmapped with mate mapped and convert to fasta"
       samtools view -f 133 -F 8 ${2} | awk '{OFS="\t"; print ">"$1"\n"$10}' > ${3}_oneEnd_unmapped.fasta
 
-      echo "      [2/2] get primary alignments of R1 reads mapped with mate unmapped"
+      echo "      [2/2] get primary alignments of mapped R1 reads with mate unmapped"
       samtools view -u -f 73 -F 260 ${1}  > ${3}_oneEndMapped.bam
 
       featureCounts_S=2             # set R1 read orientation for featureCounts (reverse)
