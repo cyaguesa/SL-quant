@@ -61,8 +61,8 @@ if [ "$SINGLE" != "single" ]; then
       echo "      [2/2] get primary alignments of R1 reads mapped with mate unmapped"
       samtools view -u -f 73 -F 260 ${1}  > ${3}_oneEndMapped.bam
 
-      featureCounts_S=2   # set R1 read orientation for featureCounts (reverse)
-      strand="plus"                                 # set blast database strandness (normal)
+      featureCounts_S=2             # set R1 read orientation for featureCounts (reverse)
+      strand="plus"                 # set blast database strandness (normal)
 
     elif [ "$paired_orientation" == "RF" ]; then
 
@@ -72,8 +72,8 @@ if [ "$SINGLE" != "single" ]; then
       echo "      [2/2] get primary alignments of R2 reads mapped with mate unmapped"
       samtools view -u -f 137 -F 260 ${1}  > ${3}_oneEndMapped.bam
 
-      featureCounts_S=2   # set R2 read orientation for featureCounts (reverse)
-      strand="reverse"                                 # set blast database strandness (reverse)
+      featureCounts_S=2             # set R2 read orientation for featureCounts (reverse)
+      strand="reverse"              # set blast database strandness (reverse)
 
     else
 
@@ -83,8 +83,8 @@ if [ "$SINGLE" != "single" ]; then
       echo "      [2/2] get reads mapped with mate unmapped"
       samtools view -u -f 9 -F 260 ${1}  > ${3}_oneEndMapped.bam
 
-      featureCounts_S=0   # set read orientation for featureCounts (unstranded)
-      strand="both"                                 # set blast database strandness (unstranded)
+      featureCounts_S=0            # set read orientation for featureCounts (unstranded)
+      strand="both"                # set blast database strandness (unstranded)
 
     fi
 
@@ -138,10 +138,16 @@ else
 
     if [ "$single_orientation" == "R" ]; then
       strand="plus"                                 # set blast database strandness (normal)
+      featureCounts_S=1                             # set featureCounts strandness (stranded)    
+
     elif [ "$single_orientation" == "F" ]; then
       strand="minus"                                # set blast database strandness (reverse)
+      featureCounts_S=1                             # set featureCounts strandness (stranded) 
+
     else
       strand="both"                                 # set blast database strandness (unstranded)
+      featureCounts_S=0                             # set featureCounts strandness (unstranded)
+
     fi
 
     echo "   blast unmapped reads on SL sequences..."
@@ -171,13 +177,6 @@ else
     hisat2 -p $threads --no-discordant --no-softclip --min-intronlen 20 --max-intronlen 5000 --rna-strandness $single_orientation -x $index -U ${2}_SL2_trimmed.fq | samtools view -b -F 260 > ${2}_SL2_remapped.bam
     
     echo "   done... summarize..."
-    if [ "$single_orientation" == "F" ]; then               # set read orientation for featureCounts (forward)
-      featureCounts_S=1   
-    elif [ "$single_orientation" == "R" ]; then             # set read orientation for featureCounts (reverse)
-      featureCounts_S=1   
-    else                                                    # set read orientation for featureCounts (unstranded)
-      featureCounts_S=0
-    fi
     featureCounts -s $featureCounts_S -F SAF -g GeneID -T 4 -a $gene_annotation -o ${2}_counts.txt ${2}_SL1_remapped.bam ${2}_SL2_remapped.bam 2>> ${2}_log.txt
   fi
 
