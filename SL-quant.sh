@@ -128,6 +128,8 @@ if [ "$SINGLE" != "single" ]; then
     echo "   [gene annotation] = $gene_annotation"
     echo "   [read orientation] = $paired_orientation";echo ""
 
+    mkdir -p "${3%/*}"
+
     echo "   fetch read pairs with one end unmapped..."
     
     if [ "$paired_orientation" == "FR" ]; then
@@ -244,6 +246,7 @@ else
     echo "   [gene annotation] = $gene_annotation"
     echo "   [read orientation] = $single_orientation";echo ""
 
+    mkdir -p "${2%/*}"
  
     if [ "$single_orientation" == "R" ]; then
       strand="plus"                                 # set blast database strandness (normal)
