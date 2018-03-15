@@ -18,11 +18,15 @@ For support, questions or requests, please contact: carlo.yaguesanz@unamur.be
 
 _SL-quant_ comes as a simple bash script that works on macOS and Linux systems. However, the following dependencies need to be installed and set in your PATH:
 
-- [blastn](http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/) from the blast+ suite
-- [samtools](http://samtools.sourceforge.net/)
-- [picard-tools](http://broadinstitute.github.io/picard/)
-- [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)
-- [featureCounts](http://subread.sourceforge.net/) from the subread package.
+- [blastn](http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/) from the blast+ suite (2.6.0 or newer)
+- [samtools](http://samtools.sourceforge.net/) (1.5 or newer)
+- [picard-tools](http://broadinstitute.github.io/picard/) (2.9.0 or newer)
+- [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) (2.3.2 or newer)
+- [featureCounts](http://subread.sourceforge.net/) from the subread package. (1.5.0 or newer)
+- [bedtools](http://bedtools.readthedocs.io/en/latest/) (2.26.0 or newer)
+- [cutadapt](http://cutadapt.readthedocs.io/en/stable/guide.html) (1.14 or newer)
+- [hisat2](https://ccb.jhu.edu/software/hisat2/index.shtml) (2.0.5 or newer)
+
 
 There are many ways to install these but the easiest might be through a package manager such as brew. 
 
@@ -44,6 +48,9 @@ Paste the following commands in the Terminal:
     brew install samtools
     brew install picard-tools
     brew install bowtie2
+    brew install bedtools
+    brew install hisat2
+    brew install cutadapt
     brew tap jrderuiter/tap
     brew install subread
 
@@ -64,9 +71,40 @@ To complete SL-quant set-up, use this script to create directories, make the oth
     ./set-up.sh
 
 ###### Test SL-quant
-We provide a small test dataset (1000 reads) for testing SL-quant with its default parameters.
+We provide a small test dataset (1000 reads) for testing SL-quant in a few seconds.
 
-    ./SL-quant.sh data/reads/test_unmapped.bam SL-quant_results/test
+    time ./SL-quant.sh data/reads/test_unmapped.bam SL-quant_results/test
+    real	0m2.718s
+    user	0m3.235s
+    sys	0m0.589s
+    
+###### Basic usage
+
+    ./SL-quant.sh -h
+
+SL-quant identifies trans-splicing events as unmapped reads containing a splice leader (SL) sequence at the 5’ end of the read. In paired-end mode, the unmapped reads are pre-filtered based on the status of their mate (it must be mapped). In sensitive mode, the criteria to identify SL sequences are less stringent, increasing sensitivity.
+
+Detailed instructions on github.com/cyaguesa/SL-quant
+
+USAGE: ./SL-quant.sh [-p -m mapped.bam] [-s] unmapped.bam output_base
+
+Required arguments:
+  unmapped.bam
+				file containing unmapped reads.
+  output_base
+				base name (+path) for the ouput.
+
+Optional arguments:
+  --mapped mapped.bam, -m mapped.bam
+				file containing mapped reads.
+  --paired, -p
+				run SL-quant in paired-end mode. 
+				Requires -m argument.
+  --sensitive, -s
+				run SL-quant in sensitive mode.
+  --help, -h
+				show this help message and exit.
+
 
 ## Detailed usage
 
@@ -75,31 +113,31 @@ To minimize _SL-quant_ running time, its primary input is limited to reads susce
 
 #### Basic paramaters
 
-###### single-end mode (default)
-In its default mode _SL-quant_ takes two parameters, the unmapped reads in bam format and the base name (path/name) for the outputs files:
+###### paired-end mode (-p --paired)
+In the case paired-end data is available, we provide an optimized paired-end mode that requires an additional parameter -m --mapped, referring to the mapped reads of the library. These mapped reads will be used to prefilter the unmapped reads and to refine the mapping after the SL-sequence trimming.
 
-Usage: `./SL-quant.sh [unmapped.bam] [output_dir/base]`
+Example: `./SL-quant.sh -p -m data/reads/test_unmapped.bam data/reads/test_unmapped.bam SL-quant_results/test`
 
-Example: `./SL-quant.sh data/reads/test_unmapped.bam SL-quant_results/test`
+###### sensitive mode (-s --sensitive)
+In sensitive mode, the criteria to identify SL sequences are less stringent, increasing sensitivity (at the cost of some specificity). It can be used in combinaison with the paired-end mode or in single-end mode.
 
-###### paired-end mode
-In the case paired-end data is available, we provide an optimized paired-end mode (see advanced parameters) that require three parameters:
+Example 1 : `./SL-quant.sh -p -s -m data/reads/test_unmapped.bam data/reads/test_unmapped.bam SL-quant_results/test`
+Example 1 : `./SL-quant.sh -s data/reads/test_unmapped.bam SL-quant_results/test`
 
-Usage: `./SL-quant.sh [mapped.bam] [unmapped.bam] [output_dir/base]`
-
-Example: `./SL-quant.sh data/reads/test_mapped.bam data/reads/test_unmapped.bam SL-quant_results/test_paired`
 
 #### Advanced paramaters
 
 At the beginning of the SL-quant.sh file, there are a few additional parameters that can be modified for advanced users.
 
 - `set -e` This means that the script will stop at the first error (which is usually for the best).
-- `SINGLE="single"` Set to "single" for single-end mode (default). Any other value triggers paired-end mode.
 - `SL_db="data/blast_db/SL.fasta"` The path to SL sequence database for blast.
 - `gene_annotation="data/genes.gtf"`The annotation file for the summarization step.
-- `index="data/ce10_bowtie2_index/genome"`The genome index for bowtie2 (only required on single-end mode).
-- `paired_orientation="fr-firststrand"`The read orientation for paired-end mode (ignored in single-end mode). Should be set to either "fr-firststrand" (default), "fr-secondstrand" or "fr-unstrand".
-- `single_orientation="stranded"`The read orientation for single-end mode (ignored in paired-end mode). Should be set to either "stranded" (default), "reversely_stranded" or "unstranded".
+- `index="data/ce10_hisat2_index/genome"`The genome index for hisat2.
+- `paired_orientation="FR"`The read orientation for paired-end mode (ignored in single-end mode). Value={"FR" (default), "RF", "unstranded"}
+- `single_orientation="R"`The read orientation for single-end mode (ignored in paired-end mode). Value={"F" (stranded), "R" (reversely stranded), "unstranded"}
+- `threads=4` The number of threads to use.
+- `send=22` The minimal end of alignment in 'subject' threshold for blast (this should be equal to the length of the SL sequence).
+- `align_length=5` The minimal length of the cutadapt alignment (default = 5).
 
 #### Output files
 
@@ -124,13 +162,15 @@ Those files are generated during the _SL-quant_ process. When the file name ends
 While SL-quant was developed for and tested on _C.elegans_ data, many other species do SL-trans-splicing. The analysis of trans-splicing events in such species is possible with SL-quant with the following adaptations. Don't hesitate to contact us if you need any help implementing those changes.
 
 #### Change the SL sequences in the blast database
-1- Find the SL sequences (not the full SL RNA sequences, only the part that will be trans-spliced to the mRNA) and save it in a fasta file `SL_my_species.fasta` in the `data/blast_db` directory.
+1- Find the SL sequences (not the full SL RNA sequences, only the part that will be trans-spliced to the mRNA) and save it in a fasta file `SL_my_species.fasta` in the `data/blast_db` directory. You should include the characters "SL1" and/or "SL2" in the header of the fasta sequence.
 
 2- Build the new blast database:
 
     makeblastdb -dbtype nucl -in data/blast_db/SL_my_species
 
 3- Replace the value of the `SL_db` parameter in the `SL-quant.sh` script by `"data/blast_db/SL_my_species.fasta"`.
+
+4- Replace the value of the `send` parameter in the `SL-quant.sh` script by the length of the new SL sequence(s).
 
 #### Change the reference genome index.
 1- Download the reference genome for your species of interest and save it as a fasta file `genome_my_species.fa` in a new `data/index_my_species` directory.
