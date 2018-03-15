@@ -82,27 +82,27 @@ We provide a small test dataset (1000 reads) for testing SL-quant in a few secon
 
     ./SL-quant.sh -h
 
-SL-quant identifies trans-splicing events as unmapped reads containing a splice leader (SL) sequence at the 5’ end of the read. In paired-end mode, the unmapped reads are pre-filtered based on the status of their mate (it must be mapped). In sensitive mode, the criteria to identify SL sequences are less stringent, increasing sensitivity.
+    SL-quant identifies trans-splicing events as unmapped reads containing a splice leader (SL) sequence at the 5’ end of the read. In paired-end mode, the unmapped reads are pre-filtered based on the status of their mate (it must be mapped). In sensitive mode, the criteria to identify SL sequences are less stringent, increasing sensitivity.
 
-Detailed instructions on github.com/cyaguesa/SL-quant
+    Detailed instructions on github.com/cyaguesa/SL-quant
 
-USAGE: ./SL-quant.sh [-p -m mapped.bam] [-s] unmapped.bam output_base
+    USAGE: ./SL-quant.sh [-p -m mapped.bam] [-s] unmapped.bam output_base
 
-Required arguments:
-  unmapped.bam
+    Required arguments:
+      unmapped.bam
 				file containing unmapped reads.
-  output_base
+      output_base
 				base name (+path) for the ouput.
 
-Optional arguments:
-  --mapped mapped.bam, -m mapped.bam
+    Optional arguments:
+      --mapped mapped.bam, -m mapped.bam
 				file containing mapped reads.
-  --paired, -p
+      --paired, -p
 				run SL-quant in paired-end mode. 
 				Requires -m argument.
-  --sensitive, -s
+      --sensitive, -s
 				run SL-quant in sensitive mode.
-  --help, -h
+      --help, -h
 				show this help message and exit.
 
 
