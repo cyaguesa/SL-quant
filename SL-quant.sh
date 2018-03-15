@@ -298,11 +298,14 @@ else
 
     else
 
-      SL_db="data/blast_db/SL_RV.fa"         # path to SL sequence database (for blast).
+      #SL_db="data/blast_db/SL_RV.fa"         # path to SL sequence database (for cutadapt).
 
-      echo "   find & cut SL sequences..."
+      echo "   convert to fastq..."
 
-      samtools fixmate ${input} - | picard SamToFastq VALIDATION_STRINGENCY=SILENT QUIET=TRUE I=/dev/stdin FASTQ=${2}.fq
+      bedtools bamtofastq -i ${input} -fq ${2}.fq
+
+      echo "   done...find & cut SL sequences..."
+      
       cutadapt -g file:$SL_db -O $align_length -m 15 -o ${2}{name}.fq --discard-untrimmed ${2}.fq 2>> ${2}_log.txt
 
       cat ${2}*_SL2_splice_leader*.fq | paste - - - - | sort -n -k2,1 -t. | tr "\t" "\n" > ${2}_SL2_trimmed.fq
