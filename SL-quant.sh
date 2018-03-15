@@ -180,12 +180,12 @@ if [ "$SINGLE" != "single" ]; then
       echo "   done... trim SL sequences and convert back into fastq..."
 
       cut -f 1 ${3}_blasted_SL1.txt > ${3}_SL1_IDs.txt
-      picard FilterSamReads FILTER=includeReadList COMPRESSION_LEVEL=0 READ_LIST_FILE=${3}_SL1_IDs.txt I=${3}_oneEnd_unmapped.bam O=${3}_SL1.sam 2>> ${3}_log.txt
+      picard FilterSamReads SORT_ORDER=unsorted FILTER=includeReadList COMPRESSION_LEVEL=0 READ_LIST_FILE=${3}_SL1_IDs.txt I=${3}_oneEnd_unmapped.bam O=${3}_SL1.sam 2>> ${3}_log.txt
       samtools sort -n ${3}_SL1.sam > ${3}_SL1_Nsorted.sam
       paste <(samtools view ${3}_SL1_Nsorted.sam | cut -f 1-11) <(cat ${3}_blasted_SL1.txt) | awk '{OFS="\t"; print $1,"4",$3,$4,$5,$6,$7,$8,$9, substr($10, $19+1),  substr($11, $19+1)}' | picard SamToFastq VALIDATION_STRINGENCY=SILENT QUIET=TRUE I=/dev/stdin FASTQ=${3}_SL1_trimmed.fq
 
       cut -f 1 ${3}_blasted_SL2.txt > ${3}_SL2_IDs.txt
-      picard FilterSamReads FILTER=includeReadList COMPRESSION_LEVEL=0 READ_LIST_FILE=${3}_SL2_IDs.txt I=${3}_oneEnd_unmapped.bam O=${3}_SL2.sam 2>> ${3}_log.txt
+      picard FilterSamReads SORT_ORDER=unsorted FILTER=includeReadList COMPRESSION_LEVEL=0 READ_LIST_FILE=${3}_SL2_IDs.txt I=${3}_oneEnd_unmapped.bam O=${3}_SL2.sam 2>> ${3}_log.txt
       samtools sort -n ${3}_SL2.sam > ${3}_SL2_Nsorted.sam
       paste <(samtools view ${3}_SL2_Nsorted.sam | cut -f 1-11) <(cat ${3}_blasted_SL2.txt) | awk '{OFS="\t"; print $1,"4",$3,$4,$5,$6,$7,$8,$9, substr($10, $19+1),  substr($11, $19+1)}' | picard SamToFastq VALIDATION_STRINGENCY=SILENT QUIET=TRUE I=/dev/stdin FASTQ=${3}_SL2_trimmed.fq
 
@@ -209,12 +209,12 @@ if [ "$SINGLE" != "single" ]; then
     echo "   done... retrieve mapped mates..."
 
     echo "      [1/2] of SL1-containing reads"
-    picard FilterSamReads FILTER=includeReadList READ_LIST_FILE=${3}_SL1_IDs.txt I=${3}_oneEndMapped.bam O=${3}_SL1_mates.bam 2>> ${3}_log.txt
+    picard FilterSamReads SORT_ORDER=unsorted FILTER=includeReadList READ_LIST_FILE=${3}_SL1_IDs.txt I=${3}_oneEndMapped.bam O=${3}_SL1_mates.bam 2>> ${3}_log.txt
     samtools sort -n ${3}_SL1_mates.bam > ${3}_SL1_mates_Nsorted.bam 
     bedtools bamtofastq -i ${3}_SL1_mates_Nsorted.bam -fq ${3}_SL1_mates.fq
 
     echo "      [2/2] of SL2-containing reads"
-    picard FilterSamReads FILTER=includeReadList READ_LIST_FILE=${3}_SL2_IDs.txt I=${3}_oneEndMapped.bam O=${3}_SL2_mates.bam 2>> ${3}_log.txt
+    picard FilterSamReads SORT_ORDER=unsorted FILTER=includeReadList READ_LIST_FILE=${3}_SL2_IDs.txt I=${3}_oneEndMapped.bam O=${3}_SL2_mates.bam 2>> ${3}_log.txt
     samtools sort -n ${3}_SL2_mates.bam > ${3}_SL2_mates_Nsorted.bam 
     bedtools bamtofastq -i ${3}_SL2_mates_Nsorted.bam -fq ${3}_SL2_mates.fq
 
