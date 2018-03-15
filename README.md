@@ -121,8 +121,9 @@ Example: `./SL-quant.sh -p -m data/reads/test_unmapped.bam data/reads/test_unmap
 ###### sensitive mode (-s --sensitive)
 In sensitive mode, the criteria to identify SL sequences are less stringent, increasing sensitivity (at the cost of some specificity). It can be used in combinaison with the paired-end mode or in single-end mode.
 
-Example 1 : `./SL-quant.sh -p -s -m data/reads/test_unmapped.bam data/reads/test_unmapped.bam SL-quant_results/test`
 Example 1 : `./SL-quant.sh -s data/reads/test_unmapped.bam SL-quant_results/test`
+
+Example 2 : `./SL-quant.sh -p -s -m data/reads/test_unmapped.bam data/reads/test_unmapped.bam SL-quant_results/test`
 
 
 #### Advanced paramaters
