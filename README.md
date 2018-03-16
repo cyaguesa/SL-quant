@@ -116,14 +116,14 @@ To minimize _SL-quant_ running time, its primary input is limited to reads susce
 ###### paired-end mode (-p --paired)
 In the case paired-end data is available, we provide an optimized paired-end mode that requires an additional parameter -m --mapped, referring to the mapped reads of the library. These mapped reads will be used to prefilter the unmapped reads and to refine the mapping after the SL-sequence trimming.
 
-Example: `./SL-quant.sh -p -m data/reads/test_unmapped.bam data/reads/test_unmapped.bam SL-quant_results/test`
+Example: `./SL-quant.sh -p -m data/reads/test_mapped.bam data/reads/test_unmapped.bam SL-quant_results/test`
 
 ###### sensitive mode (-s --sensitive)
 In sensitive mode, the criteria to identify SL sequences are less stringent, increasing sensitivity (at the cost of some specificity). It can be used in combinaison with the paired-end mode or in single-end mode.
 
 Example 1 : `./SL-quant.sh -s data/reads/test_unmapped.bam SL-quant_results/test`
 
-Example 2 : `./SL-quant.sh -p -s -m data/reads/test_unmapped.bam data/reads/test_unmapped.bam SL-quant_results/test`
+Example 2 : `./SL-quant.sh -p -s -m data/reads/test_mapped.bam data/reads/test_unmapped.bam SL-quant_results/test`
 
 
 #### Advanced paramaters
