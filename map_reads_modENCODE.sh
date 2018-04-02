@@ -6,7 +6,7 @@
 
 # REQUIREMENTS (see installation instruction if unmet):      VERSION USED       NOTE
 # - samtools installed and in your path                      1.5
-# - trimmomatic installed with path set in parameters        0.36               Manually set the path.
+# - trimmomatic installed with path set in parameters        0.36               Manually set the path if needed.
 # - hisat2 installed and in your path                        2.0.5             
 
 
@@ -20,7 +20,7 @@ index="data/ce10_hisat2_index/genome"  # genome index file.
 core=1                                 # number of cores used for sorting.
 mem="3328M"                            # amount of memory by core used for sorting.
 set -e                                 # stops script at the first error.
-trimmomatic="/Users/Carlo/Documents/binaries/Trimmomatic-0.36/trimmomatic-0.36.jar"           # path to trimmomatic                           
+trimmomatic="trimmomatic"              # path to trimmomatic                           
 threads=4                              # number of threads to use for mapping.
 
 #––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
