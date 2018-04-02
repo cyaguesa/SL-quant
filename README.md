@@ -219,8 +219,8 @@ We provide two bash scripts to map the reads for the paired-end (`map_reads.sh`)
 
 ###### single-end dataset (modENCODE_4594)
     mkdir data/reads/modENCODE
-    curl ftp://data.modencode.org/all_files/cele-raw-1/4594_SRR125481.fastq.gz -o data/reads/modENCODE/4594_SRR125481.fastq.gz
-    ./map_reads_modENCODE.sh
+    curl ftp://data.modencode.org/all_files/cele-raw-1/4594_SRR125481.fastq.gz -o data/reads/modENCODE/modENCODE_4594.fastq.gz
+    ./map_reads_modENCODE.sh data/reads/modENCODE/modENCODE_4594.fastq.gz
 
 ###### generate random reads
     bedtools random -l 50 -seed 0 -n 1000003 -g data/chrom_summary.txt > data/reads/random.bed
