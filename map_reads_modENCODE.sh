@@ -4,9 +4,9 @@
 # It sorts the mapped reads by name and coordinates.
 # instructions on https://github.com/cyaguesa/SL-quant
 
-# REQUIREMENTS (see installation instruction if unmet):      VERSION USED       NOTE
+# REQUIREMENTS (see installation instruction if unmet):      VERSION USED 
 # - samtools installed and in your path                      1.5
-# - trimmomatic installed with path set in parameters        0.36               Manually set the path if needed.
+# - trimmomatic installed and in your path                   0.36        
 # - hisat2 installed and in your path                        2.0.5             
 
 
@@ -20,7 +20,6 @@ index="data/ce10_hisat2_index/genome"  # genome index file.
 core=1                                 # number of cores used for sorting.
 mem="3328M"                            # amount of memory by core used for sorting.
 set -e                                 # stops script at the first error.
-trimmomatic="trimmomatic"              # path to trimmomatic                           
 threads=4                              # number of threads to use for mapping.
 
 #––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
@@ -40,7 +39,7 @@ else
     mkdir -p $base
 
     echo "  trim adapters"
-    java -jar $trimmomatic SE $base.fastq.gz ${base}/trimmed.fq.gz ILLUMINACLIP:data/adapters/TruSeq2-SE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
+    trimmomatic SE $base.fastq.gz ${base}/trimmed.fq.gz ILLUMINACLIP:data/adapters/TruSeq2-SE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36
 
     echo "  map SE reads"
     hisat2 -p $threads --no-softclip --min-intronlen 20 --max-intronlen 5000 --rna-strandness R -x $index -U ${base}/trimmed.fq.gz -S ${base}/mapped.sam
