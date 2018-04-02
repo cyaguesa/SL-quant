@@ -30,6 +30,7 @@ for i in $(ls $dir/*.fastq.gz | rev | cut -c $offset- | rev | uniq)
   echo ""; echo "fastq file : ${i}"
 
   echo "... aligning..."
+  mkdir ${i}
   hisat2 -p $threads --no-softclip --no-discordant --min-intronlen 20 --max-intronlen 5000 --rna-strandness FR -x $index -1 ${i}_1.fastq.gz -2 ${i}_2.fastq.gz -S ${i}/mapped.sam
   samtools view -b -F 4 ${i}/mapped.sam> ${i}/accepted_hits.bam
   samtools view -b -f 4 ${i}/mapped.sam> ${i}/unmapped.bam
