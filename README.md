@@ -218,7 +218,7 @@ We provide two bash scripts to map the reads for the paired-end (`map_reads.sh`)
     ./map_reads.sh
 
 ###### single-end dataset (modENCODE_4594)
-    mkdir data/reads/SRR1585277
+    mkdir data/reads/modENCODE
     curl ftp://data.modencode.org/all_files/cele-raw-1/4594_SRR125481.fastq.gz -o data/reads/modENCODE/4594_SRR125481.fastq.gz
     ./map_reads_modENCODE.sh
 
