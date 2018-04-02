@@ -206,7 +206,7 @@ We designed SL-quant with the idea of quantifying SL trans-splicing events by ge
     chrI	6789739     1   # 1 trans-splicing event at position 6789739 of strand '+' of chrI
 
 ## Reproduce the analysis from the manuscript.
-To reproduce the full analysis presented in our manuscript from the raw data, [R](https://www.r-project.org/), [bedtools](http://bedtools.readthedocs.io/en/latest/), [tophat2](https://ccb.jhu.edu/software/tophat/index.shtml) and [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) should be installed.
+To reproduce the full analysis presented in our manuscript from the raw data, [R](https://www.r-project.org/), [bedtools](http://bedtools.readthedocs.io/en/latest/) and [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) should be installed.
 
 ### Get and map data
 We provide two bash scripts to map the reads for the paired-end (`map_reads.sh`) and the single-end dataset (`./map_reads_modENCODE.sh`).
