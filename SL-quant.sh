@@ -223,7 +223,7 @@ if [ "$SINGLE" != "single" ]; then
     hisat2 -p $threads --no-discordant --no-softclip --min-intronlen 20 --max-intronlen 5000 --rna-strandness $paired_orientation -x $index -1 ${3}_SL2_mates.fq -2 ${3}_SL2_trimmed.fq | samtools view -b -F 260 -f 2 > ${3}_SL2_remapped.bam
 
     echo "   done... summarize..."
-    featureCounts -s -p $featureCounts_S -g gene_id -T 4 -a $gene_annotation -o ${3}_counts.txt ${3}_SL1_remapped.bam ${3}_SL2_remapped.bam 2>> ${3}_log.txt
+    featureCounts -p -s $featureCounts_S -g gene_id -T 4 -a $gene_annotation -o ${3}_counts.txt ${3}_SL1_remapped.bam ${3}_SL2_remapped.bam 2>> ${3}_log.txt
 
   fi
 
