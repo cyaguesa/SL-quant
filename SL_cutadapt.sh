@@ -45,6 +45,16 @@ read_orientation="R"                   # read orientation (default="R", reversel
     echo "   [read orientation] = $read_orientation"
     echo "   [alignment min length] = $align_length";echo ""
 
+    if [ "$single_orientation" == "R" ]; then
+      featureCounts_S=1                             # set featureCounts strandness (stranded)    
+
+    elif [ "$single_orientation" == "F" ]; then
+      featureCounts_S=1                             # set featureCounts strandness (stranded) 
+
+    else
+      featureCounts_S=0                             # set featureCounts strandness (unstranded)
+    fi
+
     echo "   convert unmapped reads to fastq ..."
     mkdir -p "$(dirname ${2}_)"
     bedtools bamtofastq -i ${1} -fq ${2}_unmapped.fq
@@ -61,6 +71,9 @@ read_orientation="R"                   # read orientation (default="R", reversel
     echo "   done... remap with hisat2"
     hisat2 -p $threads --no-discordant --no-softclip --min-intronlen 20 --max-intronlen 5000 --rna-strandness $read_orientation -x $index -U ${2}_SL2_merged.fq | samtools view -b -F 260 > ${2}_SL2_remapped.bam
     hisat2 -p $threads --no-discordant --no-softclip --min-intronlen 20 --max-intronlen 5000 --rna-strandness $read_orientation -x $index -U ${2}_SL1_merged.fq | samtools view -b -F 260 > ${2}_SL1_remapped.bam
+
+    echo "   done... summarize..."
+    featureCounts -s $featureCounts_S -g gene_id -T 4 -a $gene_annotation -o ${2}_counts.txt ${2}_SL1_remapped.bam ${2}_SL2_remapped.bam 2>> ${2}_log.txt
 
    fi
 
