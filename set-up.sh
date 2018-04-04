@@ -26,7 +26,7 @@ hisat2-build -p 4 data/ce10_hisat2_index/genome.fa data/ce10_hisat2_index/genome
 echo ""
 
 echo 'build samtools index...'
-samtools faidx data/ce10_bowtie2_index/genome.fa
+samtools faidx data/ce10_hisat2_index/genome.fa
 echo ""
 
 echo 'build blast database...'
