@@ -260,7 +260,7 @@ In SL-quant single-end mode, normal and `-s --specific` settings. Also using the
 ## Analyse the data and make figures
 An R script (`analyse_SL.R`) is provided to reproduce the analysis presented in the manuscript. 
 
-In addition, another shell script is provided to generate statistics on the SL-sites found with each method. First, as we want general information, we merge the remapped SL1 and SL2 bam files:
+In addition, another shell script is provided to generate statistics on the SL trans-spliced sites found with the various methods. First, as we want general information, we merge the remapped SL1 and SL2 bam files:
 
     for i in $(ls SL-quant_results/*/*_log.txt | rev | cut -c 8- | rev | uniq)
       do
