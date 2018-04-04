@@ -15,12 +15,6 @@ curl ftp://ftp.wormbase.org/pub/wormbase/releases/WS262/species/c_elegans/PRJNA1
 gunzip data/ce10_hisat2_index/genome.fa.gz
 echo ""
 
-echo 'rename chromosomes...'
-sed 's/CHROMOSOME_/chr/g' data/ce10_hisat2_index/genome.fa | sed 's/chrMtDNA/chrM/g' > data/ce10_hisat2_index/temp.fa
-mv data/ce10_hisat2_index/temp.fa data/ce10_hisat2_index/genome.fa
-rm data/ce10_hisat2_index/temp.fa
-echo ""
-
 echo 'build hisat2 index...'
 hisat2-build -p 4 data/ce10_hisat2_index/genome.fa data/ce10_hisat2_index/genome
 echo ""
