@@ -11,7 +11,7 @@ gunzip data/genes.gtf.gz
 echo ""
 
 echo 'download C. elegans genome...'
-curl ftp://ftp.wormbase.org/pub/wormbase/releases/WS262/species/c_elegans/PRJNA13758/c_elegans.PRJNA13758.WS262.canonical_geneset.gtf.gz -o data/ce10_hisat2_index/genome.fa.gz
+curl ftp://ftp.wormbase.org/pub/wormbase/releases/WS262/species/c_elegans/PRJNA13758/c_elegans.PRJNA13758.WS262.genomic.fa.gz -o data/ce10_hisat2_index/genome.fa.gz
 gunzip data/ce10_hisat2_index/genome.fa.gz
 echo ""
 
