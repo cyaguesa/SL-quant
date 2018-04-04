@@ -224,7 +224,7 @@ We provide two bash scripts to map the reads for the paired-end (`map_reads.sh`)
     ./map_reads_modENCODE.sh data/reads/modENCODE/modENCODE_4594.fastq.gz
 
 ###### generate random reads
-    bedtools random -l 50 -seed 0 -n 1000003 -g data/chrom_summary.txt > data/reads/random.bed
+    bedtools random -l 50 -seed 0 -n 1000000 -g data/chrom_summary.txt > data/reads/random.bed
     bedtools getfasta -fi data/ce10_hisat2_index/genome.fa -bed data/reads/random.bed > data/reads/random.fa
 
 ### Run SL-quant
