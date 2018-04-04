@@ -21,7 +21,6 @@ _SL-quant_ comes as a simple bash script that works on macOS and Linux systems. 
 - [blastn](http://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/) from the blast+ suite (2.6.0 or newer)
 - [samtools](http://samtools.sourceforge.net/) (1.5 or newer)
 - [picard-tools](http://broadinstitute.github.io/picard/) (2.9.0 or newer)
-- [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) (2.3.2 or newer)
 - [featureCounts](http://subread.sourceforge.net/) from the subread package. (1.5.0 or newer)
 - [bedtools](http://bedtools.readthedocs.io/en/latest/) (2.26.0 or newer)
 - [cutadapt](http://cutadapt.readthedocs.io/en/stable/guide.html) (1.14 or newer)
@@ -47,7 +46,6 @@ Paste the following commands in the Terminal:
     brew install blast
     brew install samtools
     brew install picard-tools
-    brew install bowtie2
     brew install bedtools
     brew install hisat2
     brew install cutadapt
@@ -176,9 +174,9 @@ While SL-quant was developed for and tested on _C.elegans_ data, many other spec
 #### Change the reference genome index.
 1- Download the reference genome for your species of interest and save it as a fasta file `genome_my_species.fa` in a new `data/index_my_species` directory.
 
-2- Build the bowtie2 index:
+2- Build the hisat2 index:
 
-    bowtie2-build data/index_my_species/genome_my_species.fa data/index_my_species/genome_my_species
+    hisat2-build data/index_my_species/genome_my_species.fa data/index_my_species/genome_my_species
 
 3- Replace the value of the `index` parameter in the `SL-quant.sh` script by `"data/index_my_species/genome_my_species.fa"`.
 
@@ -227,7 +225,7 @@ We provide two bash scripts to map the reads for the paired-end (`map_reads.sh`)
 
 ###### generate random reads
     bedtools random -l 50 -seed 0 -n 1000003 -g data/chrom_summary.txt > data/reads/random.bed
-    bedtools getfasta -fi data/ce10_bowtie2_index/genome.fa -bed data/reads/random.bed > data/reads/random.fa
+    bedtools getfasta -fi data/ce10_hisat2_index/genome.fa -bed data/reads/random.bed > data/reads/random.fa
 
 ### Run SL-quant
 
