@@ -212,37 +212,58 @@ To reproduce the full analysis presented in our manuscript from the raw data, [R
 ### Get and map data
 We provide two bash scripts to map the reads for the paired-end (`map_reads.sh`) and the single-end dataset (`./map_reads_modENCODE.sh`).
 
+###### single-end dataset (modENCODE_4594)
+    mkdir data/reads/modENCODE
+    curl ftp://data.modencode.org/all_files/cele-raw-1/4594_SRR125481.fastq.gz -o data/reads/modENCODE/modENCODE_4594.fastq.gz
+    ./map_reads_modENCODE.sh data/reads/modENCODE/modENCODE_4594.fastq.gz
+
 ###### paired-end dataset (SRR1585277)
     mkdir data/reads/SRR1585277
     curl ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR158/007/SRR1585277/SRR1585277_1.fastq.gz -o data/reads/SRR1585277/SRR1585277_1.fastq.gz
     curl ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR158/007/SRR1585277/SRR1585277_2.fastq.gz -o data/reads/SRR1585277/SRR1585277_2.fastq.gz
     ./map_reads.sh
 
-###### single-end dataset (modENCODE_4594)
-    mkdir data/reads/modENCODE
-    curl ftp://data.modencode.org/all_files/cele-raw-1/4594_SRR125481.fastq.gz -o data/reads/modENCODE/modENCODE_4594.fastq.gz
-    ./map_reads_modENCODE.sh data/reads/modENCODE/modENCODE_4594.fastq.gz
-
-###### generate random reads
+###### generate random reads (fasta -> fastq -> uBAM)
     bedtools random -l 50 -seed 0 -n 1000000 -g data/chrom_summary.txt > data/reads/random.bed
     bedtools getfasta -fi data/ce10_hisat2_index/genome.fa -bed data/reads/random.bed > data/reads/random.fa
+    awk 'BEGIN {RS = ">" ; FS = "\n"} NR > 1 {print "@"$1"\n"$2"\n+"; for(c=0;c<length($2);c++) printf "J"; printf "\n"}' data/reads/random.fa > data/reads/random.fq
+    picard FastqToSam F1=data/reads/random.fq O=data/reads/random.bam SM=random
 
 ### Run SL-quant
 
-###### paired-end dataset (SRR1585277)
-In paired-end mode (set SINGLE parameter to "paired")
-
-    ./SL-quant.sh data/reads/SRR1585277/SRR1585277/accepted_hits_sorted.bam data/reads/SRR1585277/SRR1585277/unmapped.bam SL-quant_results/SRR1585277_paired"
-
-In single-end mode (set SINGLE parameter to "single")
-
-    ./SL-quant.sh data/reads/SRR1585277/SRR1585277/unmapped.bam SL-quant_results/SRR1585277_single"
-
 ###### single-end dataset (modENCODE_4594)
-    ./SL-quant.sh data/reads/modENCODE/modENCODE_4594/unmapped.bam SL-quant_results/modENCODE_4594
+In SL-quant single-end mode, normal and `-s --specific` settings. Also using the 'cutadapt' method.
 
+    ./SL-quant.sh data/reads/modENCODE/modENCODE_4594/unmapped.bam SL-quant_results/modENCODE_4594
+    ./SL-quant.sh -s data/reads/modENCODE/modENCODE_4594/unmapped.bam SL-quant_results/modENCODE_4594_s/
+    ./SL_cutadapt.sh data/reads/modENCODE/modENCODE_4594/unmapped.bam SL-quant_results/modENCODE_4594_cutadapt/
+
+###### paired-end dataset (SRR1585277)
+In single and paired-end, normal and `-s --specific` settings. Also using the 'cutadapt' method.
+
+    ./SL-quant.sh data/reads/SRR1585277/SRR1585277/unmapped.bam SL-quant_results/SRR1585277_single/
+    ./SL-quant.sh -s data/reads/SRR1585277/SRR1585277/unmapped.bam SL-quant_results/SRR1585277_single_s/
+    ./SL-quant.sh -p -m data/reads/SRR1585277/SRR1585277/accepted_hits_sorted.bam data/reads/SRR1585277/SRR1585277/unmapped.bam SL-quant_results/SRR1585277_paired/
+    ./SL-quant.sh -s -p -m data/reads/SRR1585277/SRR1585277/accepted_hits_sorted.bam data/reads/SRR1585277/SRR1585277/unmapped.bam SL-quant_results/SRR1585277_paired_s/
+    ./SL_cutadapt.sh data/reads/SRR1585277/SRR1585277/unmapped.bam_R2.bam SL-quant_results/SRR1585277_single_cutadapt/
+
+###### random reads dataset
+In SL-quant single-end mode, normal and `-s --specific` settings. Also using the 'cutadapt' method.
+
+    ./SL-quant.sh data/reads/random.bam SL-quant_results/random/
+    ./SL-quant.sh -s data/reads/random.bam SL-quant_results/random_s/
+    ./SL_cutadapt.sh data/reads/random.bam SL-quant_results/random_cutadapt/
+    
 ###### blast random reads
     blastn -query data/reads/random.fa -db data/blast_db/SL.fasta -outfmt 6 -max_target_seqs 1 -num_threads 4 -word_size 8 > SL-quant_results/random_blasted.txt
 
-## Analyse the data and make the plots
-An R script (`analyse_SL.R`) is provided to reproduce the analysis presented in the manuscript.
+## Analyse the data and make figures
+An R script (`analyse_SL.R`) is provided to reproduce the analysis presented in the manuscript. 
+
+In addition, another shell script is provided to generate statistics on the SL-sites found with each method. First, as we want general information, we merge the remapped SL1 and SL2 bam files:
+
+    for i in $(ls SL-quant_results/*/*_log.txt | rev | cut -c 8- | rev | uniq)
+      do
+      samtools merge -f ${i}SL_merged_remapped.bam ${i}SL1_remapped.bam ${i}SL2_remapped.bam
+      done
+    ./SL_sites.sh SL-quant_results/*/*SL_merged_remapped.bam
