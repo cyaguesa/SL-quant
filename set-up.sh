@@ -1,6 +1,6 @@
 #!/bin/bash
 
-chmod +x SL-quant.sh map_reads_modENCODE.sh map_reads.sh SL-sites.sh SL-cutadapt.sh
+chmod +x SL-quant.sh map_reads_modENCODE.sh map_reads.sh SL_sites.sh SL_cutadapt.sh
 mkdir data/ce10_hisat2_index
 mkdir SL-quant_results
 echo ""
