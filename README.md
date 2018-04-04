@@ -266,4 +266,7 @@ In addition, another shell script is provided to generate statistics on the SL-s
       do
       samtools merge -f ${i}SL_merged_remapped.bam ${i}SL1_remapped.bam ${i}SL2_remapped.bam
       done
+      
+   Then `SL_sites.sh` is run on the merged bam files. Alternatively, it can also be used directly on the SL1/SL2 specific bam files.
+   
     ./SL_sites.sh SL-quant_results/*/*SL_merged_remapped.bam
