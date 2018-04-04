@@ -323,7 +323,7 @@ else
     hisat2 -p $threads --no-discordant --no-softclip --min-intronlen 20 --max-intronlen 5000 --rna-strandness $single_orientation -x $index -U ${2}_SL2_trimmed.fq | samtools view -b -F 260 > ${2}_SL2_remapped.bam
 
     echo "   done... summarize..."
-    featureCounts -s 1 -g gene_id -T 4 -a $gene_annotation -o ${2}_counts.txt ${2}_SL1_remapped.bam ${2}_SL2_remapped.bam 2>> ${2}_log.txt
+    featureCounts -s $featureCounts_S -g gene_id -T 4 -a $gene_annotation -o ${2}_counts.txt ${2}_SL1_remapped.bam ${2}_SL2_remapped.bam 2>> ${2}_log.txt
   fi
 
 fi
