@@ -17,8 +17,8 @@ echo ""
 
 echo 'rename chromosomes...'
 sed 's/CHROMOSOME_/chr/g' data/ce10_hisat2_index/genome.fa | sed 's/chrMtDNA/chrM/g' > data/ce10_hisat2_index/temp.fa
-mv data/ce10_bowtie2_index/temp.fa data/ce10_bowtie2_index/genome.fa
-rm data/ce10_bowtie2_index/temp.fa
+mv data/ce10_hisat2_index/temp.fa data/ce10_hisat2_index/genome.fa
+rm data/ce10_hisat2_index/temp.fa
 echo ""
 
 echo 'build hisat2 index...'
