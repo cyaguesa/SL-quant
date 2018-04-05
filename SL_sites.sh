@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This script does provides statistics about SL-sites (provided as bam files).
+# This script provides statistics about SL-sites (provided as bam files).
 # It also checks whether the consensus sequence is "AG" or not
 # and output the sequence around SL-sites in fasta.
 # instructions on https://github.com/cyaguesa/SL-quant
