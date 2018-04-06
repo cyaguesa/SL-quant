@@ -45,10 +45,10 @@ read_orientation="R"                   # read orientation (default="R", reversel
     echo "   [read orientation] = $read_orientation"
     echo "   [alignment min length] = $align_length";echo ""
 
-    if [ "$single_orientation" == "R" ]; then
+    if [ "$read_orientation" == "R" ]; then
       featureCounts_S=1                             # set featureCounts strandness (stranded)    
 
-    elif [ "$single_orientation" == "F" ]; then
+    elif [ "$read_orientation" == "F" ]; then
       featureCounts_S=1                             # set featureCounts strandness (stranded) 
 
     else
