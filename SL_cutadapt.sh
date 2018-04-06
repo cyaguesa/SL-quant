@@ -32,7 +32,7 @@ read_orientation="R"                   # read orientation (default="R", reversel
   if [ $# != 2 ]; then
     echo ""; echo "   Usage : ./SL_cutadapt.sh [unmapped.bam] [ouput_dir/base]"; echo ""
     echo "   Example : ./SL_cutadapt.sh data/reads/modENCODE/modENCODE_4594/unmapped.bam SL-quant_results/modENCODE_4594_cutadapt/"
-    echo "   Example : ./SL_cutadapt.sh data/reads/SRR1585277/SRR1585277/unmapped.bam_R2.bam SL-quant_results/SRR1585277_single_cutadapt/"
+    echo "   Example : ./SL_cutadapt.sh data/reads/SRR1585277/SRR1585277/unmapped.bam SL-quant_results/SRR1585277_single_cutadapt/"
 
     exit 1
 
