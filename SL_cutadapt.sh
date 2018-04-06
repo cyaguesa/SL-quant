@@ -23,7 +23,8 @@ index="data/ce10_hisat2_index/genome"  # genome index file.
 align_length=5                         # length of the cutadapt alignment (default = 5).
 threads=4                              # number of threads to use.
 read_orientation="R"                   # read orientation (default="R", reversely stranded).                     
-                     
+gene_annotation="data/genes.gtf"       # annotation file
+                    
 
 #––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 # "CUTADAPT" MODE
