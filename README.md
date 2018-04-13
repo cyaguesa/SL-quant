@@ -11,7 +11,7 @@ For support, questions or requests, please contact: carlo.yaguesanz@unamur.be
 - [Installation & quick start](https://github.com/cyaguesa/SL-quant/blob/master/README.md#installation--quick-start)
 - [Detailed usage](https://github.com/cyaguesa/SL-quant/blob/master/README.md#detailed-usage)
 - [Adaptation to other species](https://github.com/cyaguesa/SL-quant/blob/master/README.md#adaptation-to-other-species)
-- [Identification of trans-splice sites](https://github.com/cyaguesa/SL-quant/blob/master/README.md#Identification-of-SL-trans-spliced-sites)
+- [Identification of SL trans-spliced sites](https://github.com/cyaguesa/SL-quant/blob/master/README.md#identification-of-sl-trans-spliced-sites)
 - [Reproduce the analysis from the manuscript](https://github.com/cyaguesa/SL-quant/blob/master/README.md#reproduce-the-analysis-from-the-manuscript)
 
 ## Installation & quick start
