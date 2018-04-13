@@ -181,13 +181,15 @@ While SL-quant was developed for and tested on _C.elegans_ data, many other spec
 3- Replace the value of the `index` parameter in the `SL-quant.sh` script by `"data/index_my_species/genome_my_species.fa"`.
 
 #### Change the gene annotation file.
-1 - For now, SL-quant only supports [SAF annotation files](http://bioinf.wehi.edu.au/featureCounts/). Support for .gtf files is planned in the near future. Download or create one of those file `genes_my_species.SAF` for your species and save it into the `data` directory.
+1 - Download or create a [.gtf](https://genome.ucsc.edu/FAQ/FAQformat.html#format4) file `genes_my_species.gtf` for your species and save it into the `data` directory.
 
-2- Replace the value of the `gene_annotation` parameter in the `SL-quant.sh` script by `data/genes_my_species.SAF`.
+2- Replace the value of the `gene_annotation` parameter in the `SL-quant.sh` script by `data/genes_my_species.gtf`.
 
-## Identification of trans-splice sites
+3- Done ! Now you can use SL-quant with your new species !
 
-We designed SL-quant with the idea of quantifying SL trans-splicing events by genes but it is also possible to identify trans-splice sites at single nucleotide resolution from the output. Indeed, in single-end mode, the 5' end of the reads mapped after SL sequence trimming correspond to the position of the trans-splice sites. The folowing lines describe such analysis applied to the SL1 trans-splicing only.
+## Identification of SL trans-spliced sites
+
+We designed SL-quant with the idea of quantifying SL trans-splicing events by genes but it is also possible to identify trans-spliced sites at single nucleotide resolution from the output. Indeed, in single-end mode, the 5' end of the reads mapped after SL sequence trimming correspond to the position of the trans-spliced sites. The folowing lines describe such analysis applied to the SL1 trans-splicing only.
 
 #### sort remapped bam files
 
@@ -202,6 +204,22 @@ We designed SL-quant with the idea of quantifying SL trans-splicing events by ge
 
     head -n 1 SL-quant_results/test_TS_SL1_sites_fwd.tab
     chrI	6789739     1   # 1 trans-splicing event at position 6789739 of strand '+' of chrI
+    
+#### Consensus
+
+We also provide a script, [SL_sites.sh](https://github.com/cyaguesa/SL-quant/blob/master/SL_sites.sh), which automatize the analysis of the SL trans-spliced sites. In addition, it generates a fasta file of the -5 -> +5 interval around this splice that can be used to create a consensus sequence. The proportion of sites on 'AG' consensus acceptor sequences is also outputed.
+
+    ./SL_sites.sh SL-quant_results/test_SL1_remapped.bam
+    find number of SL-transplicing events by sites (not by genes): SL-quant_results/test_SL1_remapped.bam
+    [single-end data]
+          number of SL-transplicing events detected: 49
+          number of sites detected:       12
+          number of sites which are 'AG' splice-sites: 11 (91.666 %)
+	  
+    head -n 2 SL-quant_results/test_SL1_remapped.bam.fasta
+    >I:11611-11622(+)
+    TTACAGTAAGC 
+
 
 ## Reproduce the analysis from the manuscript.
 To reproduce the full analysis presented in our manuscript from the raw data, [R](https://www.r-project.org/) and [trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic) should be installed. Trimmomatic can be installed with brew:
