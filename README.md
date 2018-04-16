@@ -150,7 +150,7 @@ Those files are generated during the _SL-quant_ process. When the file name ends
 - `[output_dir/base]_SL1_IDs.txt` countains the read IDs of the SL1-containing reads.
 - `[output_dir/base]_SL1.sam` countains the SL1-containing reads in SAM format (single-end mode only).
 - `[output_dir/base]_SL1_trimmed.fq` countains the trimmed SL1-containing reads in fastq format (single-end mode only).
-- `[output_dir/base]_SL1_remapped.bam` countains the trimmed SL1-containing reads mapped on the genome in bam format (single-end mode only).
+- `[output_dir/base]_SL1_remapped.bam` countains the trimmed SL1-containing reads mapped on the genome in bam format.
 - `[output_dir/base]_oneEnd_unmapped.fasta` countains unmapped reads (after prefiltering) in fasta format (paired-end mode only).
 - `[output_dir/base]_oneEndMapped.bam` countains the mates of the unmapped reads (after prefiltering) in bam format (paired-end mode only).
 
@@ -207,7 +207,7 @@ We designed SL-quant with the idea of quantifying SL trans-splicing events by ge
     
 #### Consensus
 
-We also provide a script, [SL_sites.sh](https://github.com/cyaguesa/SL-quant/blob/master/SL_sites.sh), which automatize the analysis of the SL trans-spliced sites. In addition, it generates a fasta file of the -5 -> +5 interval around this splice that can be used to create a consensus sequence. The proportion of sites on 'AG' consensus acceptor sequences is also outputed.
+We also provide a script, [SL_sites.sh](https://github.com/cyaguesa/SL-quant/blob/master/SL_sites.sh), which automatize the analysis of the SL trans-spliced sites. In addition, it generates a fasta file of the -5 -> +5 interval around this splice that can be used to create a consensus sequence (with [weblogo](http://weblogo.threeplusone.com/create.cgi) for instance). The proportion of sites on 'AG' consensus acceptor sequences is also outputed.
 
     ./SL_sites.sh SL-quant_results/test_SL1_remapped.bam
     find number of SL-transplicing events by sites (not by genes): SL-quant_results/test_SL1_remapped.bam
@@ -271,12 +271,9 @@ In SL-quant single-end mode, normal and `-s --specific` settings. Also using the
     ./SL-quant.sh data/reads/random.bam SL-quant_results/random/
     ./SL-quant.sh -s data/reads/random.bam SL-quant_results/random_s/
     ./SL_cutadapt.sh data/reads/random.bam SL-quant_results/random_cutadapt/
-    
-###### blast random reads
-    blastn -query data/reads/random.fa -db data/blast_db/SL.fasta -outfmt 6 -max_target_seqs 1 -num_threads 4 -word_size 8 > SL-quant_results/random_blasted.txt
 
 ## Analyse the data and make figures
-An R script (`analyse_SL.R`) is provided to reproduce the analysis presented in the manuscript. 
+An R script (`analyse_SL.R`) is provided to reproduce the analysis and figures presented in the manuscript. 
 
 In addition, another shell script is provided to generate statistics on the SL trans-spliced sites found with the various methods. First, as we want general information, we merge the remapped SL1 and SL2 bam files:
 
