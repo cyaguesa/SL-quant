@@ -10,13 +10,13 @@ return_pos_in_operon<-function(my_op, annot=SL_quant){
   res=rep("NA",n)
   if (my_op$strand=="+"){
     for (j in c(1:n)){
-      res[j]=as.numeric(annot$start[which(annot$GeneID == my_op$genes[[1]][j])])
+      res[j]=as.numeric(annot$Start[which(annot$GeneID == my_op$genes[[1]][j])])
     }
     res=order(res)
   }
   else if (my_op$strand=="-"){
     for (j in c(1:n)){
-      res[j]=as.numeric(annot$start[which(annot$GeneID == my_op$genes[[1]][j])])
+      res[j]=as.numeric(annot$Start[which(annot$GeneID == my_op$genes[[1]][j])])
     }
     res=order(res, decreasing=T)
   }
@@ -77,10 +77,12 @@ SL_quant=read.table("SL-quant_results/SRR1585277_paired/_counts.txt", header=T)
 SL_quant_single=read.table("SL-quant_results/SRR1585277_single/_counts.txt", header=T)
 SL_quant_paired_s=read.table("SL-quant_results/SRR1585277_paired_s/_counts.txt", header=T)
 SL_quant_single_s=read.table("SL-quant_results/SRR1585277_single_s/_counts.txt", header=T)
+SL_quant_single_cutadapt=read.table("SL-quant_results/SRR1585277_single_cutadapt/_counts.txt", header=T)
 SL_quant_modENCODE=read.table("SL-quant_results/modENCODE_4594/_counts.txt", header=T)
 SL_quant_modENCODE_s=read.table("SL-quant_results/modENCODE_4594_s/_counts.txt", header=T)
-SL_quant=cbind(SL_quant,SL_quant_single[,c(7,8)],SL_quant_paired_s[,c(7,8)],SL_quant_single_s[,c(7,8)],SL_quant_modENCODE[,c(7,8)],SL_quant_modENCODE_s[,c(7,8)])
-colnames(SL_quant)=c("GeneID","Chr","Start","End", "Strand", "Length","SL1_paired", "SL2_paired", "SL1_single", "SL2_single","SL1_paired_s", "SL2_paired_s", "SL1_single_s", "SL2_single_s","SL1_modENCODE","SL2_modENCODE","SL1_modENCODE_s","SL2_modENCODE_s")
+SL_quant_modENCODE_cutadapt=read.table("SL-quant_results/modENCODE_4594_cutadapt/_counts.txt", header=T)
+SL_quant=cbind(SL_quant,SL_quant_single[,c(7,8)],SL_quant_paired_s[,c(7,8)],SL_quant_single_s[,c(7,8)],SL_quant_single_cutadapt[,c(7,8)],SL_quant_modENCODE[,c(7,8)],SL_quant_modENCODE_s[,c(7,8)],SL_quant_modENCODE_cutadapt[,c(7,8)])
+colnames(SL_quant)=c("GeneID","Chr","Start","End", "Strand", "Length","SL1_paired", "SL2_paired", "SL1_single", "SL2_single","SL1_paired_s", "SL2_paired_s", "SL1_single_s", "SL2_single_s", "SL1_cutadapt", "SL2_cutadapt","SL1_modENCODE","SL2_modENCODE","SL1_modENCODE_s","SL2_modENCODE_s","SL1_modENCODE_cutadapt","SL2_modENCODE_cutadapt")
 
 # prepare operon table
 operon<-read.table("data/operon.gff3", sep="\t", header=F)
@@ -140,13 +142,38 @@ toPlot=blast_data_single[which(blast_data_single$evalue<0.05 & grepl("SL1", blas
 toPlot=blast_data_single[which(blast_data_single$evalue<0.05 & grepl("SL2", blast_data_single$subject)),];lines(as.numeric(names(summary(as.factor(toPlot$length))))[1:14],summary(as.factor(toPlot$length))[1:14], col=rgb(0,0,0.6,0.6), type="b", lty=2, pch=3, lwd=2.5)
 legend("topright",legend=c("SL1", "SL2","SL1 single mode", "SL2 single mode"),pch=c(1,1), lty=c(1,1,2,2) ,col=rep(c(rgb(0.9,0,0,0.8),rgb(0,0,0.9,0.8),rgb(0.6,0,0,0.6),rgb(0,0,0.6,0.6)), 1),bty="n", lwd=2.5)
 
+# - clean figure for manuscript : SL1-containing reads vs SL2, SRR dataset, single-end mode
+A=blast_data_single[which(blast_data_single$evalue<0.05 & grepl("SL1", blast_data_single$subject) & blast_data_single$qstart==1  & blast_data_single$send==22),]
+B=blast_data_single[which(blast_data_single$evalue<0.05 & grepl("SL2", blast_data_single$subject) & blast_data_single$qstart==1  & blast_data_single$send==22),]
+align_length=data.frame("reads"=c(0,0,summary(as.factor(A$length))[1:13],0,0,summary(as.factor(B$length))[1:13]))
+align_length$SL=rep(c("SL1","SL2"), each=15)
+align_length$length=rep(c(8:22), 2)
+library(ggplot2)
+ggplot(align_length, aes(x=length, y=reads, group=SL)) +
+  geom_line(aes(color=SL))+ geom_point(aes(color=SL))+
+  theme_minimal()+theme(axis.text=element_text(size=12),axis.title=element_text(size=14),legend.text=element_text(size=15),legend.title=element_text(size=0))
+
 #   - Proportion of significant/NS alignments starting at qstart==1 and ending at send==22.
 sum(blast_data[which(blast_data$evalue<0.05),]$qstart==1 & blast_data[which(blast_data$evalue<0.05),]$send==22)/sum(blast_data$evalue<0.05);sum(blast_data[which(blast_data$evalue>=0.05),]$qstart==1 & blast_data[which(blast_data$evalue>=0.05),]$send==22)/sum(blast_data$evalue>=0.05)
 sum(blast_data_single[which(blast_data_single$evalue<0.05),]$qstart==1 & blast_data_single[which(blast_data_single$evalue<0.05),]$send==22)/sum(blast_data_single$evalue<0.05);sum(blast_data_single[which(blast_data_single$evalue>=0.05),]$qstart==1 & blast_data_single[which(blast_data_single$evalue>=0.05),]$send==22)/sum(blast_data_single$evalue>=0.05)
 sum(blast_data_modENCODE[which(blast_data_modENCODE$evalue<0.05),]$qstart==1 & blast_data_modENCODE[which(blast_data_modENCODE$evalue<0.05),]$send==22)/sum(blast_data_modENCODE$evalue<0.05);sum(blast_data_modENCODE[which(blast_data_modENCODE$evalue>=0.05),]$qstart==1 & blast_data_modENCODE[which(blast_data_modENCODE$evalue>=0.05),]$send==22)/sum(blast_data_modENCODE$evalue>=0.05)
 sum(blast_data_random[which(blast_data_random$evalue<0.05),]$qstart==1 & blast_data_random[which(blast_data_random$evalue<0.05),]$send==22)/sum(blast_data_random$evalue<0.05);sum(blast_data_random[which(blast_data_random$evalue>=0.05),]$qstart==1 & blast_data_random[which(blast_data_random$evalue>=0.05),]$send==22)/sum(blast_data_random$evalue>=0.05)
 
-#   - With the modENCODE dataset (true single-end data), the enrichment is sharpest at 10 nt. Perhaps because much more SL1 ! and different lib prep
+proper_orientation=function(dat=blast_data){
+  return(sum(dat[which(dat$evalue<0.05),]$qstart==1 & dat[which(dat$evalue<0.05),]$send==22))
+}
+wrong_orientation=function(dat=blast_data){
+  return(sum(dat$evalue<0.05)-sum(dat[which(dat$evalue<0.05),]$qstart==1 & dat[which(dat$evalue<0.05),]$send==22))
+}
+
+orientation=data.frame("alignments"=c(proper_orientation(blast_data_modENCODE),wrong_orientation(blast_data_modENCODE),proper_orientation(blast_data_single),wrong_orientation(blast_data_single),proper_orientation(),wrong_orientation(),proper_orientation(blast_data_random),wrong_orientation(blast_data_random)))
+orientation$method=factor(rep(c("modENCODE_4594", "single", "paired", "random"), each=2), levels=c("modENCODE_4594", "single", "paired","random"))
+orientation$type=factor(rep(c("proper orientation", "spurious"), 4), levels=c("spurious","proper orientation"))
+ggplot(orientation[which(orientation$method != "modENCODE_4594"),]) + geom_bar(aes(y =alignments, x = method, fill = type), stat="identity")+
+  theme_minimal()+scale_fill_brewer(palette="Paired")+ theme(axis.text=element_text(size=12),axis.title=element_text(size=14),legend.text=element_text(size=15),legend.title=element_text(size=0))
+
+
+#   - With the modENCODE dataset (true single-end data), the enrichment is sharpest at 10 nt. Perhaps because much more SL1 and/or and different lib prep
 plot(as.numeric(names(summary(as.factor(blast_data_modENCODE$length)))),summary(as.factor(blast_data_modENCODE$length)), type="b", ylim=c(0,185000),ylab="# blasted reads",xlab="length of the match", col="blue", frame=F, xlim=c(8,22)); abline(v=9.8, lty=2, col="darkgrey")
 
 toPlot=blast_data_modENCODE[which(blast_data_modENCODE$evalue<0.05),];plot(c(8:22),c(0,0,summary(as.factor(toPlot$length))[1:13]), type="b", ylim=c(0,150000),ylab="number of blasted reads",xlab="length of the match (nt)", col=rgb(0.9,0,0,0.8), frame=F, xlim=c(8,22), lwd=2.5)
@@ -167,13 +194,36 @@ colSums(SL_quant[,c(7:18)]) # total number of SL-transplicing events on genes.
 plot(log2(SL_quant$SL1_paired), log2(SL_quant$SL2_paired),axes=F, xlab="", ylab="",pch=19, cex=1, col=ifelse(SL_quant$Position=="Seconds_in_operon",rgb(0.9,0,0,0.5),rgb(0,0,0.9,0.5)), frame=F, ylim=c(0,11.5), xlim=c(0,11.5))#SL1 trans-splicing events (log2)
 axis(1, at=c(0,2,4,6,8,10), cex=1.5);axis(2, at=c(0,2,4,6,8,10), cex=1.5)
 legend("top",legend=c("downstream in operon      ", "other genes"),pch=19 ,col=c(rgb(0.9,0,0,0.8),rgb(0,0,0.9,0.8)),bty="n",cex=1,seg.len=0, lwd=4, horiz = T)
-#SL_quant[which(log2(SL_quant$SL1)>10 & SL_quant$Position=="Seconds_in_operon"),]
 
 # SL_quant : single
 plot(log2(SL_quant$SL1_single), log2(SL_quant$SL2_single),axes=F, xlab="", ylab="",pch=19, cex=1, col=ifelse(SL_quant$Position=="Seconds_in_operon",rgb(0.9,0,0,0.5),rgb(0,0,0.9,0.5)), frame=F, ylim=c(0,11), xlim=c(0,11.5))#SL1 trans-splicing events (log2)
 axis(1, at=c(0,2,4,6,8,10), cex=1.5);axis(2, at=c(0,2,4,6,8,10), cex=1.5)
 legend("top",legend=c("downstream in operon      ", "other genes"),pch=19 ,col=c(rgb(0.9,0,0,0.8),rgb(0,0,0.9,0.8)),bty="n",cex=1,seg.len=0, lwd=4, horiz = T)
 
+# SL_quant : single merged datasets
+plot(log2(SL_quant$SL1_single+SL_quant$SL1_modENCODE), log2(SL_quant$SL2_single+SL_quant$SL2_modENCODE),axes=F, xlab="", ylab="",pch=19, cex=0.8, col=ifelse(SL_quant$Position=="Seconds_in_operon",rgb(0.9,0,0,0.5),rgb(0,0,0.9,0.5)), frame=F, ylim=c(0,13), xlim=c(0,13))#SL1 trans-splicing events (log2)
+axis(1, at=c(0,4,8,12), cex=1.5);axis(2, at=c(0,4,8,12), cex=1.5)
+legend(0,12,legend=c("downstream in operon      ", "other genes"),pch=19 ,col=c(rgb(0.9,0,0,0.8),rgb(0,0,0.9,0.8)),bty="n",cex=1,seg.len=0, lwd=4, horiz = F)
+
+# SL_quant : cutadapt
+plot(log2(SL_quant$SL1_cutadapt), log2(SL_quant$SL2_cutadapt),axes=F, xlab="", ylab="",pch=19, cex=1, col=ifelse(SL_quant$Position=="Seconds_in_operon",rgb(0.9,0,0,0.5),rgb(0,0,0.9,0.5)), frame=F, ylim=c(0,11), xlim=c(0,11.5))#SL1 trans-splicing events (log2)
+axis(1, at=c(0,2,4,6,8,10), cex=1.5);axis(2, at=c(0,2,4,6,8,10), cex=1.5)
+legend("top",legend=c("downstream in operon      ", "other genes"),pch=19 ,col=c(rgb(0.9,0,0,0.8),rgb(0,0,0.9,0.8)),bty="n",cex=1,seg.len=0, lwd=4, horiz = T)
+
+# SL_quant : single --sensitive
+plot(log2(SL_quant$SL1_single_s), log2(SL_quant$SL2_single_s),axes=F, xlab="", ylab="",pch=19, cex=1, col=ifelse(SL_quant$Position=="Seconds_in_operon",rgb(0.9,0,0,0.5),rgb(0,0,0.9,0.5)), frame=F, ylim=c(0,11), xlim=c(0,11.5))#SL1 trans-splicing events (log2)
+axis(1, at=c(0,2,4,6,8,10), cex=1.5);axis(2, at=c(0,2,4,6,8,10), cex=1.5)
+legend("top",legend=c("downstream in operon      ", "other genes"),pch=19 ,col=c(rgb(0.9,0,0,0.8),rgb(0,0,0.9,0.8)),bty="n",cex=1,seg.len=0, lwd=4, horiz = T)
+
+# SL_quant : single --sensitive merged datasets
+plot(log2(SL_quant$SL1_single_s+SL_quant$SL1_modENCODE_s), log2(SL_quant$SL2_single_s+SL_quant$SL2_modENCODE_s),axes=F, xlab="", ylab="",pch=19, cex=1, col=ifelse(SL_quant$Position=="Seconds_in_operon",rgb(0.9,0,0,0.5),rgb(0,0,0.9,0.5)), frame=F, ylim=c(0,12), xlim=c(0,12))#SL1 trans-splicing events (log2)
+axis(1, at=c(0,2,4,6,8,10), cex=1.5);axis(2, at=c(0,2,4,6,8,10), cex=1.5)
+legend("top",legend=c("downstream in operon      ", "other genes"),pch=19 ,col=c(rgb(0.9,0,0,0.8),rgb(0,0,0.9,0.8)),bty="n",cex=1,seg.len=0, lwd=4, horiz = T)
+
+# SL_quant : paired --sensitive
+plot(log2(SL_quant$SL1_paired_s), log2(SL_quant$SL2_paired_s),axes=F, xlab="", ylab="",pch=19, cex=1, col=ifelse(SL_quant$Position=="Seconds_in_operon",rgb(0.9,0,0,0.5),rgb(0,0,0.9,0.5)), frame=F, ylim=c(0,11), xlim=c(0,11.5))#SL1 trans-splicing events (log2)
+axis(1, at=c(0,2,4,6,8,10), cex=1.5);axis(2, at=c(0,2,4,6,8,10), cex=1.5)
+legend("top",legend=c("downstream in operon      ", "other genes"),pch=19 ,col=c(rgb(0.9,0,0,0.8),rgb(0,0,0.9,0.8)),bty="n",cex=1,seg.len=0, lwd=4, horiz = T)
 
 # SL_quant : modENCODE
 plot(log2(SL_quant$SL1_modENCODE), log2(SL_quant$SL2_modENCODE),axes=F, xlab="", ylab="",pch=19, cex=1, col=ifelse(SL_quant$Position=="Seconds_in_operon",rgb(0.9,0,0,0.5),rgb(0,0,0.9,0.5)), frame=F, ylim=c(0,12.5), xlim=c(0,12))#SL1 trans-splicing events (log2)
@@ -185,8 +235,15 @@ plot(log2(SL_quant$SL1_modENCODE_s), log2(SL_quant$SL2_modENCODE_s),axes=F, xlab
 axis(1, at=seq(0,12,4), cex=1.5);axis(2, at=seq(0,12,4), cex=1.5)
 legend(x=1, y=13,legend=c("downstream in operon      ", "other genes"),pch=19 ,col=c(rgb(0.9,0,0,0.8),rgb(0,0,0.9,0.8)),bty="n",cex=1,seg.len=0, lwd=4, horiz = F)
 
+# SL_quant : modENCODE_cutadapt
+plot(log2(SL_quant$SL1_modENCODE_cutadapt), log2(SL_quant$SL2_modENCODE_cutadapt),axes=F, xlab="", ylab="",pch=19, cex=1, col=ifelse(SL_quant$Position=="Seconds_in_operon",rgb(0.9,0,0,0.5),rgb(0,0,0.9,0.5)), frame=F, ylim=c(0,12.5), xlim=c(0,12))#SL1 trans-splicing events (log2)
+axis(1, at=seq(0,12,4), cex=1.5);axis(2, at=seq(0,12,4), cex=1.5)
+legend(x=1, y=13,legend=c("downstream in operon      ", "other genes"),pch=19 ,col=c(rgb(0.9,0,0,0.8),rgb(0,0,0.9,0.8)),bty="n",cex=1,seg.len=0, lwd=4, horiz = F)
 
-# ROC curves : More than 90% TPR
+
+
+# ROC curves
+
 SL_quant$truth=SL_quant$Position=="Seconds_in_operon"
 SL_quant$SL_ratio_paired=SL_quant$SL2_paired/(SL_quant$SL1_paired+SL_quant$SL2_paired)
 SL_quant$SL_ratio_single=SL_quant$SL2_single/(SL_quant$SL1_single+SL_quant$SL2_single)
@@ -194,105 +251,80 @@ SL_quant$SL_ratio_paired_s=SL_quant$SL2_paired_s/(SL_quant$SL1_paired_s+SL_quant
 SL_quant$SL_ratio_single_s=SL_quant$SL2_single_s/(SL_quant$SL1_single_s+SL_quant$SL2_single_s)
 SL_quant$SL_ratio_modENCODE=SL_quant$SL2_modENCODE/(SL_quant$SL1_modENCODE+SL_quant$SL2_modENCODE)
 SL_quant$SL_ratio_modENCODE_s=SL_quant$SL2_modENCODE_s/(SL_quant$SL1_modENCODE_s+SL_quant$SL2_modENCODE_s)
+SL_quant$SL_ratio_single_merged=(SL_quant$SL2_single+SL_quant$SL2_modENCODE)/(SL_quant$SL1_single+SL_quant$SL2_single+SL_quant$SL1_modENCODE+SL_quant$SL2_modENCODE)
+SL_quant$SL_ratio_single_s_merged=(SL_quant$SL2_single_s+SL_quant$SL2_modENCODE_s)/(SL_quant$SL1_single_s+SL_quant$SL2_single_s+SL_quant$SL2_modENCODE_s+SL_quant$SL1_modENCODE_s)
+SL_quant$SL_ratio_cutadapt=(SL_quant$SL2_cutadapt)/(SL_quant$SL2_cutadapt+SL_quant$SL1_cutadapt)
+SL_quant$SL_ratio_modENCODE_cutadapt=(SL_quant$SL2_modENCODE_cutadapt)/(SL_quant$SL2_modENCODE_cutadapt+SL_quant$SL1_modENCODE_cutadapt)
 
-considered_genes_modENCODE=which(!is.na(rowSums(SL_quant[,c(25:26)])))
-considered_genes_SRR=which(!is.na(rowSums(SL_quant[,c(21:24)])))
+# paired-end dataset
 
-roc_ratio_paired=calculate_roc(SL_quant[considered_genes_SRR,],20,21,1,1,1000)
-roc_ratio_single=calculate_roc(SL_quant[considered_genes_SRR,],20,22,1,1,1000)
-roc_ratio_paired_s=calculate_roc(SL_quant[considered_genes_SRR,],20,23,1,1,1000)
-roc_ratio_single_s=calculate_roc(SL_quant[considered_genes_SRR,],20,24,1,1,1000)
-roc_ratio_modENCODE=calculate_roc(SL_quant[considered_genes_modENCODE,],20,25,1,1,1000)
-roc_ratio_modENCODE_s=calculate_roc(SL_quant[considered_genes_modENCODE,],20,26,1,1,1000)
+considered_genes=which(!is.na(rowSums(SL_quant[,c(25:28,33)])))
+roc_ratio_paired=calculate_roc(SL_quant[considered_genes,],24,25,1,1,1000)
+roc_ratio_single=calculate_roc(SL_quant[considered_genes,],24,26,1,1,1000)
+roc_ratio_paired_s=calculate_roc(SL_quant[considered_genes,],24,27,1,1,1000)
+roc_ratio_single_s=calculate_roc(SL_quant[considered_genes,],24,28,1,1,1000)
+roc_ratio_cutadapt=calculate_roc(SL_quant[considered_genes,],24,33,1,1,1000)
 
-plot(c(roc_ratio_modENCODE$fpr), c(roc_ratio_modENCODE$tpr), type="l", ylim=c(0.5,1), xlim=c(0,0.5), frame=F, col="blue", xlab="FPR", ylab="TPR", lwd=2)
-lines(c(roc_ratio_modENCODE_s$fpr), c(roc_ratio_modENCODE_s$tpr), type="l", col="red", lty=2, lwd=2)
-abline(v=0.05, lty=2, col="darkgrey")
-legend("bottomright", legend =c("modENCODE_4594 (normal)","modENCODE_4594 (sensitive)"),lty=c(1,2), col=c("blue", "red"), bty="n", lwd=2)
+plot(c(roc_ratio_single$fpr), c(roc_ratio_single$tpr), type="l", ylim=c(0.5,1), xlim=c(0,0.5), frame=F, col="blue", xlab="FPR", ylab="TPR", lwd=2.5)
+lines(c(roc_ratio_single_s$fpr), c(roc_ratio_single_s$tpr), type="l", col="red", lty=2, lwd=2.5)
+lines(c(roc_ratio_paired$fpr), c(roc_ratio_paired$tpr), type="l", col="darkblue", lty=1, lwd=2.5)
+lines(c(roc_ratio_paired_s$fpr), c(roc_ratio_paired_s$tpr), type="l", col="darkred", lty=2, lwd=2.5)
+abline(v=0.05, lty=2, col="darkgrey");abline(v=0.10, lty=2, col="darkgrey");abline(h=0.90, lty=2, col="darkgrey")
+legend("bottomright", legend =c(  "single","sensitive", "paired","paired, sensitive"),lty=c(1,2), col=c("blue", "red","darkblue", "darkred"), bty="n", lwd=2.5)
 
-plot(c(roc_ratio_paired$fpr), c(roc_ratio_paired$tpr), type="l", ylim=c(0.5,1), xlim=c(0,0.5), frame=F, col="blue", xlab="FPR", ylab="TPR", lwd=2)
-lines(c(roc_ratio_single$fpr), c(roc_ratio_single$tpr), type="l", col="red", lty=2, lwd=2)
-lines(c(roc_ratio_single_s$fpr), c(roc_ratio_single_s$tpr), type="l", col="darkred", lty=2, lwd=2)
-lines(c(roc_ratio_paired_s$fpr), c(roc_ratio_paired_s$tpr), type="l", col="darkblue", lty=1, lwd=2)
-abline(v=0.05, lty=2, col="darkgrey");abline(v=0.10, lty=2, col="darkgrey")
-legend("bottomright", legend =c("paired","single", "paired, sensitive", "single, sensitive"),lty=c(1,2), col=c("blue", "red","darkblue", "darkred"), bty="n", lwd=2)
-
-plot(c(roc_ratio_paired$fpr), c(roc_ratio_paired$tpr), type="l", ylim=c(0.8,1), xlim=c(0,0.2), frame=F, col="blue", xlab="FPR", ylab="TPR", lwd=2)
-lines(c(roc_ratio_single$fpr), c(roc_ratio_single$tpr), type="l", col="red", lty=2, lwd=2)
-lines(c(roc_ratio_single_s$fpr), c(roc_ratio_single_s$tpr), type="l", col="darkred", lty=2, lwd=2)
-lines(c(roc_ratio_paired_s$fpr), c(roc_ratio_paired_s$tpr), type="l", col="darkblue", lty=1, lwd=2)
-abline(v=0.05, lty=2, col="darkgrey");abline(v=0.10, lty=2, col="darkgrey")
-legend("bottomright", legend =c("paired","single", "paired, sensitive", "single, sensitive"),lty=c(1,2), col=c("blue", "red","darkblue", "darkred"), bty="n", lwd=2)
-
+#paired-end dataset zoomed in
+plot(c(roc_ratio_single$fpr), c(roc_ratio_single$tpr), type="l", ylim=c(0.8,1), xlim=c(0,0.2), frame=F, col="blue", xlab="FPR", ylab="TPR", lwd=2.5)
+lines(c(roc_ratio_single_s$fpr), c(roc_ratio_single_s$tpr), type="l", col="red", lty=2, lwd=2.5)
+lines(c(roc_ratio_paired$fpr), c(roc_ratio_paired$tpr), type="l", col="darkblue", lty=1, lwd=2.5)
+lines(c(roc_ratio_paired_s$fpr), c(roc_ratio_paired_s$tpr), type="l", col="darkred", lty=2, lwd=2.5)
+abline(v=0.05, lty=2, col="darkgrey");abline(v=0.10, lty=2, col="darkgrey");abline(h=0.90, lty=2, col="darkgrey")
+legend(0.12,0.875, legend =c("SL-quant","SL-quant -s", "SL-quant -p","SL-quant -s -p"),lty=c(1,2), col=c("blue", "red","darkblue", "darkred"), bty="n", lwd=2.5, cex=1.2)
 
 
-plot(c(roc_ratio_paired_s$fpr), c(roc_ratio_paired_s$tpr), type="l", ylim=c(0.5,1), xlim=c(0,0.5), frame=F, col="blue", xlab="FPR", ylab="TPR", lwd=2)
-lines(c(roc_ratio_single_s$fpr), c(roc_ratio_single_s$tpr), type="l", col="red", lty=2, lwd=2)
-abline(v=0.05, lty=2, col="darkgrey")
-legend("bottomright", legend =c("SRR1585277 (paired sensitive)","SRR1585277 (single sensitive)"),lty=c(1,2), col=c("blue", "red"), bty="n", lwd=2)
+# single end dataset
+considered_genes=which(!is.na(rowSums(SL_quant[,c(29:30,34)])))
+roc_ratio_modENCODE=calculate_roc(SL_quant[considered_genes,],24,29,1,1,1000)
+roc_ratio_modENCODE_s=calculate_roc(SL_quant[considered_genes,],24,30,1,1,1000)
+roc_ratio_modENCODE_cutadapt=calculate_roc(SL_quant[considered_genes,],24,34,1,1,1000)
 
-plot(c(roc_ratio$fpr), c(roc_ratio$tpr), type="l", ylim=c(0.5,1), xlim=c(0,0.5), frame=F, col="blue", xlab="FPR", ylab="TPR", lwd=2)
-lines(c(roc_ratio_single$fpr), c(roc_ratio_single$tpr), type="l", col="red", lty=2, lwd=2)
-lines(c(roc_ratio_modENCODE$fpr), c(roc_ratio_modENCODE$tpr),lty=4, type="l", col="darkgreen", lwd=2)
-abline(v=0.05, lty=2, col="darkgrey")
-legend("bottomright", legend =c("SRR1585277(paired)","SRR1585277(single)","modENCODE_4594"),lty=c(1,2,4), col=c("blue", "red","darkgreen"), bty="n", lwd=2)
+plot(c(roc_ratio_modENCODE$fpr), c(roc_ratio_modENCODE$tpr), type="l", ylim=c(0.5,1), xlim=c(0,0.5), frame=F, col="blue", xlab="FPR", ylab="TPR", lwd=2.5)
+lines(c(roc_ratio_modENCODE_s$fpr), c(roc_ratio_modENCODE_s$tpr), type="l", col="red", lty=2, lwd=2.5)
+abline(v=0.05, lty=2, col="darkgrey");abline(h=0.90, lty=2, col="darkgrey")
+legend("bottomright", legend =c("modENCODE_4594 (normal)","modENCODE_4594 (sensitive)"),lty=c(1,2), col=c("blue", "red"), bty="n", lwd=2.5)
+
 
 # Area under the curbe (AUC)
-install.packages("DescTools")
+#install.packages("DescTools")
 library("DescTools")
-AUC(c(roc_ratio$fpr), c(roc_ratio$tpr)) #0.9540
-AUC(c(roc_ratio_single$fpr), c(roc_ratio_single$tpr)) #0.9536
-AUC(c(roc_ratio_modENCODE$fpr), c(roc_ratio_modENCODE$tpr)) #0.9490
+AUC(c(roc_ratio_single$fpr), c(roc_ratio_single$tpr)) # 0.9475906
+AUC(c(roc_ratio_paired$fpr), c(roc_ratio_paired$tpr)) #0.9446432
+AUC(c(roc_ratio_single_s$fpr), c(roc_ratio_single_s$tpr)) # 0.9578731
+AUC(c(roc_ratio_paired_s$fpr), c(roc_ratio_paired_s$tpr)) #0.955828
+AUC(c(roc_ratio_modENCODE$fpr), c(roc_ratio_modENCODE$tpr)) #0.9350319
+AUC(c(roc_ratio_modENCODE_s$fpr), c(roc_ratio_modENCODE_s$tpr)) #0.949761
 
 
-#roc_log_reg=calculate_roc(pred,1,2,1,1,1000)
+#–––––––––––––––––––––––––––––––––––
+# 4- "AG" consensus in SL sites ?
+#–––––––––––––––––––––––––––––––––––
 
-plot(c(roc_ratio$fpr), c(roc_ratio$tpr), type="l", ylim=c(0.5,1), xlim=c(0,0.5), frame=F, col="blue", xlab="FPR", ylab="TPR")
-lines(c(roc_ratio_single$fpr), c(roc_ratio_single$tpr), type="l", col="red");abline(v=0.05, lty=2, col="darkgrey")
-lines(c(roc_log_reg$fpr), c(roc_log_reg$tpr), type="l",ylim=c(0,1), col="green")
-library(DescTools)
-AUC(c(roc_ratio$fpr), c(roc_ratio$tpr))
-AUC(c(roc_ratio_single$fpr), c(roc_ratio_single$tpr))
-
-# appendix : code to create randm reads from sampling the genome
-bedtools random -l 50 -seed 0 -n 1000003 -g /Users/carlo/Desktop/these_Carlo/data_raw/annotation/C.elegans/chrom_summary_2 > random.bed
-bedtools getfasta -fi data/ce10_bowtie1_CS_index/genome.fa -bed random.bed > data/reads/random.fa
-blastn -query data/reads/random.fa -db data/blast_db/SL.fasta -outfmt 6 -max_target_seqs 1 -num_threads 4 -word_size 8 > SL-quant_results/random_blasted.txt
-awk '$11 < "0.05" {print $0}' SL-quant_results/random_blasted.txt | wc -l
-awk '$7 == 1 && $11 < "0.05" {print $0}' SL-quant_results/random_blasted.txt | wc -l
-
-# appendix 2: code to create test files 
-
-samtools view SL-quant_results/SRR1585277_oneEndMapped.bam | cut -f 1 | head -n 1000 > SRR1585277_oneEndMapped.IDs
-samtools view -h SL-quant_results/SRR1585277_oneEndMapped.bam | head -n 1009 | samtools view -b > test_mapped.bam
-samtools view -h SL-quant_results/SRR1585277_oneEnd_unmapped.bam > SRR1585277_oneEnd_unmapped.sam
-grep -F -w -f SRR1585277_oneEndMapped.IDs SRR1585277_oneEnd_unmapped.sam > test_unmapped.sam
-head -n 9 SRR1585277_oneEnd_unmapped.sam | cat - test_unmapped.sam | samtools view -b > test_unmapped.bam
-
-head -n 9 SRR1585277_oneEnd_unmapped.sam | cat test_unmapped.sam
-
-
-# NEW radom figures
-#AG_usage=data.frame("sites"=c(8283,11155), "AG"=c(8074,9953), "spurious"=c(8283,11155)-c(8074,9953),"method"=c("SL-quant", "'cutadapt'"))
-#AG_usage=data.frame("sites"=c(8074,8283-8074,9953,11155-9953),"method"=rep(c("SL-quant", "'cutadapt'"), each=2),"type"=rep(c("AG", "spurious"), 2))
-
-AG_usage=data.frame("sites"=c(8074,8238-8074,9953,11155-9953,9948,10735-9948),"method"=rep(c("SL-quant", "'cutadapt'", "'Ecutadapt'"), each=2),"type"=rep(c("AG", "spurious"), 3))
-AG_usage$type=as.factor(AG_usage$type);AG_usage$type=relevel(AG_usage$type,"spurious")
-AG_usage$percent=round(c(8074,8238-8074,9953,11155-9953,9948,10735-9948)/rep(c(8238,11155,10735),each=2),2)
-AG_usage$position=c(8074,8074,9953,9953,9948,9948)-rep(c(+500,-120),3)
-
-library(ggplot2)
-ggplot(AG_usage[which(AG_usage$method != "'Ecutadapt'"),]) + geom_bar(aes(y = sites, x = method, fill = type), stat="identity")+
-  theme_minimal()+scale_fill_brewer(palette="Paired")
-# + geom_text(aes(label = paste0(100*percent,"%"),y=position, x = method),size = 3)+
+# Run SL_sites.sh -> create dataframe with the results
+# paired-end dataset
 
 #paired-end dataset
-AG_usage=data.frame("sites"=c(8371,9156-8371,7957,8436-7957,6401,6539-6401,6148,6302-6148),"method"=as.factor(rep(c("'cutadapt'", "SL-quant -p -s", "SL-quant", "SL-quant -p"), each=2)),"type"=rep(c("AG", "spurious"), 4))
+AG_usage=data.frame("sites"=c(8372,9154-8372,8254,8770-8254,7957,8436-7957,6402,6539-6402,6149,6301-6149),"method"=as.factor(rep(c("Tourasse et al.", "SL-quant -s","SL-quant -s -p", "SL-quant", "SL-quant -p"), each=2)),"type"=rep(c("AG", "spurious"), 5))
 AG_usage$type=as.factor(AG_usage$type);AG_usage$type=relevel(AG_usage$type,"spurious")
-AG_usage$percent=round(AG_usage$sites/rep(c(9156,8436,6539,6302),each=2),2)
-AG_usage$position=rep(rep(c(8371,7957,6401,6148),each=2))-rep(c(+500,-120),4)
-AG_usage$method=factor(AG_usage$method, levels=levels(AG_usage$method)[c(1,4,2,3)])
+AG_usage$method=factor(AG_usage$method, levels=(levels(AG_usage$method))[c(5,3,4,1,2)])
 ggplot(AG_usage[which(AG_usage$method != "'Ecutadapt'"),]) + geom_bar(aes(y = sites, x = method, fill = type), stat="identity")+
-  theme_minimal()+scale_fill_brewer(palette="Paired")
+  theme_minimal()+scale_fill_brewer(palette="Paired")+theme(axis.text=element_text(size=12),axis.title=element_text(size=14),legend.text=element_text(size=15),legend.title=element_text(size=0))
 
+ggplot(AG_usage[which(AG_usage$method %in% c("Tourasse et al.", "SL-quant -s", "SL-quant")),]) + geom_bar(aes(y = sites, x = method, fill = type), stat="identity")+
+  theme_minimal()+scale_fill_brewer(palette="Paired")+theme(axis.text=element_text(size=12),axis.title=element_text(size=14),legend.text=element_text(size=15),legend.title=element_text(size=0))
+
+#single-end dataset
+AG_usage=data.frame("sites"=c(9953,11155-9953,9948,10735-9948,8081,8247-8081),"method"=as.factor(rep(c("Tourasse et al.", "SL-quant -s", "SL-quant"), each=2)),"type"=rep(c("AG", "spurious"), 3))
+AG_usage$type=as.factor(AG_usage$type);AG_usage$type=relevel(AG_usage$type,"spurious")
+AG_usage$method=factor(AG_usage$method, levels=rev(levels(AG_usage$method)))
+ggplot(AG_usage[which(AG_usage$method != "'Ecutadapt'"),]) + geom_bar(aes(y = sites, x = method, fill = type), stat="identity")+
+  theme_minimal()+scale_fill_brewer(palette="Paired")+theme(axis.text=element_text(size=12),axis.title=element_text(size=14),legend.text=element_text(size=15),legend.title=element_text(size=0))
 
