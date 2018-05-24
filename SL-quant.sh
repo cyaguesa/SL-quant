@@ -197,10 +197,10 @@ if [ "$SINGLE" != "single" ]; then
       samtools fixmate ${3}_oneEnd_unmapped.bam - | picard SamToFastq VALIDATION_STRINGENCY=SILENT QUIET=TRUE I=/dev/stdin FASTQ=${3}_oneEnd_unmapped.fq
       cutadapt -g file:$SL_db -O $align_length -m 15 -o ${3}{name}.fq --discard-untrimmed ${3}_oneEnd_unmapped.fq 2>> ${3}_log.txt
 
-      cat ${3}*_SL2*.fq | paste - - - - | sort -n -k2,1 -t. | tr "\t" "\n" > ${3}_SL2_trimmed.fq
-      cat ${3}*_SL1*.fq | paste - - - - | sort -n -k2,1 -t. | tr "\t" "\n" > ${3}_SL1_trimmed.fq
-      rm ${3}*_SL2*.fq
-      rm ${3}*_SL1*.fq
+      cat ${3}*_SL2_splice_leader*.fq | paste - - - - | sort -n -k2,1 -t. | tr "\t" "\n" > ${3}_SL2_trimmed.fq
+      cat ${3}*_SL1_splice_leader*.fq | paste - - - - | sort -n -k2,1 -t. | tr "\t" "\n" > ${3}_SL1_trimmed.fq
+      rm ${3}*_SL2_splice_leader*.fq
+      rm ${3}*_SL1_splice_leader*.fq
 
       awk 'NR%4==1 {print substr($1,2); }' ${3}_SL1_trimmed.fq > ${3}_SL1_IDs.txt
       awk 'NR%4==1 {print substr($1,2); }' ${3}_SL2_trimmed.fq > ${3}_SL2_IDs.txt
@@ -311,10 +311,10 @@ else
       
       cutadapt -g file:$SL_db -O $align_length -m 15 -o ${2}{name}.fq --discard-untrimmed ${2}_unmapped.fq 2>> ${2}_log.txt
 
-      cat ${2}*_SL2*.fq | paste - - - - | sort -n -k2,1 -t. | tr "\t" "\n" > ${2}_SL2_trimmed.fq
-      cat ${2}*_SL1*.fq | paste - - - - | sort -n -k2,1 -t. | tr "\t" "\n" > ${2}_SL1_trimmed.fq
-      rm ${2}*_SL2*.fq
-      rm ${2}*_SL1*.fq
+      cat ${2}*_SL2_splice_leader*.fq | paste - - - - | sort -n -k2,1 -t. | tr "\t" "\n" > ${2}_SL2_trimmed.fq
+      cat ${2}*_SL1_splice_leader*.fq | paste - - - - | sort -n -k2,1 -t. | tr "\t" "\n" > ${2}_SL1_trimmed.fq
+      rm ${2}*_SL2_splice_leader*.fq
+      rm ${2}*_SL1_splice_leader*.fq
 
     fi
  
