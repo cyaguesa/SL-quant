@@ -4,7 +4,7 @@
 
 _SL-quant_ is a bash pipeline that adapts to paired-end and single-end RNA-seq data to accurately quantify splice-leader (SL) trans-splicing events by genes in the nematode _C. elegans_. It is designed to work downstream of read mapping and takes the reads left unmapped as primary input. _SL-quant_ completes under 15 minutes on a basic desktop computer for typical RNA-seq libraries.
 
-Detailed description and validation of the pipeline are reported in the manuscript [still under consideration for publication; reference will be added once published].
+Detailed description and validation of the pipeline are reported in [the manuscript](https://doi.org/10.1093/gigascience/giy084) published in Gigascience.
 
 For support, questions or requests, please contact: carlo.yaguesanz@unamur.be 
 
