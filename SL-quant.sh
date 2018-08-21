@@ -146,7 +146,7 @@ if [ "$SINGLE" != "single" ]; then
     elif [ "$paired_orientation" == "RF" ]; then
 
       echo "      [1/2] get R1 reads unmapped with mate mapped and convert to fastq"
-      samtools view -f 69 -F 8 ${2} | awk '{OFS="\t"; print ">"$1"\n"$10}' > ${3}_oneEnd_unmapped.fasta
+      samtools view -f 69 -F 8 ${2} > ${3}_oneEnd_unmapped.bam
 
       echo "      [2/2] get primary alignments of R2 reads mapped with mate unmapped"
       samtools view -u -f 137 -F 260 ${1}  > ${3}_oneEndMapped.bam
@@ -157,7 +157,7 @@ if [ "$SINGLE" != "single" ]; then
     else
 
       echo "      [1/2] get reads unmapped with mate mapped and convert to fastq"
-      samtools view -f 5 -F 8 ${2} | awk '{OFS="\t"; print ">"$1"\n"$10}' > ${3}_oneEnd_unmapped.fasta
+      samtools view -f 5 -F 8 ${2} > ${3}_oneEnd_unmapped.bam
 
       echo "      [2/2] get reads mapped with mate unmapped"
       samtools view -u -f 9 -F 260 ${1}  > ${3}_oneEndMapped.bam
