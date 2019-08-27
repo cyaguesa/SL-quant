@@ -48,8 +48,8 @@ Optional arguments:
 				show this help message and exit.
 
 
-EOF)
-
+EOF
+)
 
 #––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 # PARAMETERS
@@ -197,8 +197,8 @@ if [ "$SINGLE" != "single" ]; then
       samtools fixmate ${3}_oneEnd_unmapped.bam - | picard SamToFastq VALIDATION_STRINGENCY=SILENT QUIET=TRUE I=/dev/stdin FASTQ=${3}_oneEnd_unmapped.fq
       cutadapt -g file:$SL_db -O $align_length -m 15 -o ${3}{name}.fq --discard-untrimmed ${3}_oneEnd_unmapped.fq 2>> ${3}_log.txt
 
-      cat ${3}*_SL2_splice_leader*.fq | paste - - - - | sort -n -k2,1 -t. | tr "\t" "\n" > ${3}_SL2_trimmed.fq
-      cat ${3}*_SL1_splice_leader*.fq | paste - - - - | sort -n -k2,1 -t. | tr "\t" "\n" > ${3}_SL1_trimmed.fq
+      cat ${3}*_SL2_splice_leader*.fq | paste - - - - | sort -n -k2,2 -t. | tr "\t" "\n" > ${3}_SL2_trimmed.fq
+      cat ${3}*_SL1_splice_leader*.fq | paste - - - - | sort -n -k2,2 -t. | tr "\t" "\n" > ${3}_SL1_trimmed.fq
       rm ${3}*_SL2_splice_leader*.fq
       rm ${3}*_SL1_splice_leader*.fq
 
